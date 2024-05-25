@@ -49,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
         matchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(getApplication().getBaseContext(), String.valueOf(v.getId()), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication().getBaseContext(), String.valueOf(v.getId()), Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, ScoutActivity.class));
             }
         });
 
