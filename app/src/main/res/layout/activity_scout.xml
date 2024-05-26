@@ -99,7 +99,8 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:hint="4213"
-                        android:inputType="text" />
+                        android:inputType="number" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -120,8 +121,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="21"
-                        android:inputType="text" />
+                        android:hint="23"
+                        android:inputType="number" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -145,7 +147,19 @@
                         android:hint="Red 1"
                         android:inputType="text" />
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/compileButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Compile" />
+
             </LinearLayout>
+
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </LinearLayout>
     </ScrollView>
