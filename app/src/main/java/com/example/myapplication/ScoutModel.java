@@ -1,14 +1,14 @@
 package com.example.myapplication;
 
 public class ScoutModel {
-    private int matchID;
+    private int dataID;
     private String name;
     private int teamScouted;
     private int qualNumber;
     private String robotPosition;
 
-    public ScoutModel(int matchID, String name, int teamScouted, int qualNumber, String robotPosition) {
-        this.matchID = matchID;
+    public ScoutModel(int dataID, String name, int teamScouted, int qualNumber, String robotPosition) {
+        this.dataID = dataID;
         this.name = name;
         this.teamScouted = teamScouted;
         this.qualNumber = qualNumber;
@@ -18,7 +18,7 @@ public class ScoutModel {
     @Override
     public String toString() {
         return "scoutModel{" +
-                "matchID=" + matchID +
+                "dataID=" + dataID +
                 ", name='" + name + '\'' +
                 ", teamScouted=" + teamScouted +
                 ", qualNumber=" + qualNumber +
@@ -26,12 +26,12 @@ public class ScoutModel {
                 '}';
     }
 
-    public int getMatchID() {
-        return matchID;
+    public int getDataID() {
+        return dataID;
     }
 
-    public void setMatchID(int matchID) {
-        this.matchID = matchID;
+    public void setDataID(int dataID) {
+        this.dataID = dataID;
     }
 
     public String getName() {

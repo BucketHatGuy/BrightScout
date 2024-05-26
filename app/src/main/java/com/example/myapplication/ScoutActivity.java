@@ -54,6 +54,8 @@ public class ScoutActivity extends AppCompatActivity {
                 boolean isQualsMatchBoxEmpty = qualsMatchBox.getText().toString().isEmpty();
                 boolean isRobotPositionBoxEmpty = robotPositionBox.getText().toString().isEmpty();
 
+                ScoutModel scoutModel = null;
+
                 try {
                     if(isScoutNameBoxEmpty || isScoutedTeamBoxEmpty || isQualsMatchBoxEmpty || isRobotPositionBoxEmpty){
                         if(isScoutNameBoxEmpty){
@@ -82,7 +84,7 @@ public class ScoutActivity extends AppCompatActivity {
 
                         Toast.makeText(ScoutActivity.this, "Blank Box Error (did you forget something?)", Toast.LENGTH_SHORT).show();
                     } else {
-                        ScoutModel scoutModel = new ScoutModel(-1,
+                        scoutModel = new ScoutModel(MainActivity.dataID,
                                 scoutNameBox.getText().toString(),
                                 Integer.parseInt(scoutedTeamBox.getText().toString()),
                                 Integer.parseInt(qualsMatchBox.getText().toString()),
@@ -93,7 +95,10 @@ public class ScoutActivity extends AppCompatActivity {
                         qualsMatchBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
                         robotPositionBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
 
-                        Toast.makeText(ScoutActivity.this, scoutModel.toString(), Toast.LENGTH_SHORT).show();
+                        DataBaseHelper dataBaseHelper = new DataBaseHelper(ScoutActivity.this);
+                        boolean b = dataBaseHelper.addOne(scoutModel);
+
+                        Toast.makeText(ScoutActivity.this, "Success =" + b, Toast.LENGTH_SHORT).show();
                     }
 
                 } catch (Exception e){

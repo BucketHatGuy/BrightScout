@@ -18,13 +18,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 public class MainActivity extends AppCompatActivity {
 
-    int buttonID = 0;
+    static int dataID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
     public void createMatch(View v){
         Button matchButton = new Button(this);
         matchButton.setText("Quals ???");
-        buttonID++;
-        matchButton.setId(buttonID);
+        dataID++;
+        matchButton.setId(dataID);
         matchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
