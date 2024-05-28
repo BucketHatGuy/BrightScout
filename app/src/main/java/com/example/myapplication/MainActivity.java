@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +19,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    static int dataID = 0;
+    static int maxDataID = 0;
+    static int currentDataID = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +43,12 @@ public class MainActivity extends AppCompatActivity {
     public void createMatch(View v){
         Button matchButton = new Button(this);
         matchButton.setText("Quals ???");
-        dataID++;
-        matchButton.setId(dataID);
+        maxDataID++;
+        matchButton.setId(maxDataID);
         matchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplication().getBaseContext(), String.valueOf(v.getId()), Toast.LENGTH_SHORT).show();
+                currentDataID = v.getId();
                 startActivity(new Intent(MainActivity.this, ScoutActivity.class));
             }
         });

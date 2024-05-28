@@ -2,8 +2,10 @@ package com.example.myapplication;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -14,14 +16,49 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTableStatement = "CREATE TABLE SCOUTING_TABLE (DATA_ID INT, SCOUT_NAME TEXT, SCOUTED_TEAM INT, QUALS_MATCH INT, ROBOT_POSITION TEXT)";
 
-        db.execSQL(createTableStatement);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    public ScoutModel getScoutModel(int dataID){
+        try{
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE WHERE DATA_ID=" + dataID, null);
+
+            if(cursor.moveToFirst()){
+                dataID = cursor.getInt(0);
+                String name = cursor.getString(1);
+                int teamScouted = cursor.getInt(2);
+                int qualNumber = cursor.getInt(3);
+                String robotPosition = cursor.getString(4);
+
+                db.close();
+                cursor.close();
+                return new ScoutModel(dataID, name, teamScouted, qualNumber, robotPosition);
+            } else {
+                Log.d("not even close", "message");
+
+                db.close();
+                cursor.close();
+                return null;
+            }
+        } catch(Exception exception){
+            return null;
+        }
+    }
+
+    public void createTable(){
+        // this will be used in the case of someone opening the app for the first time
+        // which... i'm not sure when to exactly execute, but i can't just do this during onCreate like I did before.
+        SQLiteDatabase db = this.getWritableDatabase();
+        String createTableStatement = "CREATE TABLE SCOUTING_TABLE (DATA_ID INT PRIMARY KEY, SCOUT_NAME TEXT, SCOUTED_TEAM INT, QUALS_MATCH INT, ROBOT_POSITION TEXT)";
+
+        db.execSQL(createTableStatement);
+        Log.d("we made the table!","message");
     }
 
     public boolean addOne(ScoutModel scoutModel){

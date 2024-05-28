@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +21,6 @@ public class ScoutActivity extends AppCompatActivity {
 
     Button compileButton;
     EditText scoutNameBox, scoutedTeamBox, qualsMatchBox, robotPositionBox;
-    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,75 +36,92 @@ public class ScoutActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("BrightScout");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         compileButton = findViewById(R.id.compileButton);
         scoutNameBox = findViewById(R.id.scoutNameBoxView);
         scoutedTeamBox = findViewById(R.id.scoutedTeamBoxView);
         qualsMatchBox = findViewById(R.id.qualsMatchBoxView);
         robotPositionBox = findViewById(R.id.robotPositionBoxView);
-        listView = findViewById(R.id.listView);
+
+        insertSavedData(MainActivity.currentDataID);
 
         compileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isScoutNameBoxEmpty = scoutNameBox.getText().toString().isEmpty();
-                boolean isScoutedTeamBoxEmpty = scoutedTeamBox.getText().toString().isEmpty();
-                boolean isQualsMatchBoxEmpty = qualsMatchBox.getText().toString().isEmpty();
-                boolean isRobotPositionBoxEmpty = robotPositionBox.getText().toString().isEmpty();
-
-                ScoutModel scoutModel = null;
-
-                try {
-                    if(isScoutNameBoxEmpty || isScoutedTeamBoxEmpty || isQualsMatchBoxEmpty || isRobotPositionBoxEmpty){
-                        if(isScoutNameBoxEmpty){
-                            scoutNameBox.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-                        } else {
-                            scoutNameBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-                        }
-
-                        if(isScoutedTeamBoxEmpty){
-                            scoutedTeamBox.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-                        } else {
-                            scoutedTeamBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-                        }
-
-                        if(isQualsMatchBoxEmpty){
-                            qualsMatchBox.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-                        } else {
-                            qualsMatchBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-                        }
-
-                        if(isRobotPositionBoxEmpty){
-                            robotPositionBox.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-                        } else {
-                            robotPositionBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-                        }
-
-                        Toast.makeText(ScoutActivity.this, "Blank Box Error (did you forget something?)", Toast.LENGTH_SHORT).show();
-                    } else {
-                        scoutModel = new ScoutModel(MainActivity.dataID,
-                                scoutNameBox.getText().toString(),
-                                Integer.parseInt(scoutedTeamBox.getText().toString()),
-                                Integer.parseInt(qualsMatchBox.getText().toString()),
-                                robotPositionBox.getText().toString());
-
-                        scoutNameBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-                        scoutedTeamBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-                        qualsMatchBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-                        robotPositionBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-
-                        DataBaseHelper dataBaseHelper = new DataBaseHelper(ScoutActivity.this);
-                        boolean b = dataBaseHelper.addOne(scoutModel);
-
-                        Toast.makeText(ScoutActivity.this, "Success =" + b, Toast.LENGTH_SHORT).show();
-                    }
-
-                } catch (Exception e){
-                    Toast.makeText(ScoutActivity.this, "Unknown Compiling Error Occurred", Toast.LENGTH_SHORT).show();
-                }
+                checkIfDataIsFilled();
             }
         });
+    }
+
+    public void checkIfDataIsFilled(){
+        boolean isScoutNameBoxEmpty = scoutNameBox.getText().toString().isEmpty();
+        boolean isScoutedTeamBoxEmpty = scoutedTeamBox.getText().toString().isEmpty();
+        boolean isQualsMatchBoxEmpty = qualsMatchBox.getText().toString().isEmpty();
+        boolean isRobotPositionBoxEmpty = robotPositionBox.getText().toString().isEmpty();
+
+        ScoutModel scoutModel = null;
+
+        try {
+            if(isScoutNameBoxEmpty || isScoutedTeamBoxEmpty || isQualsMatchBoxEmpty || isRobotPositionBoxEmpty){
+                if(isScoutNameBoxEmpty){
+                    scoutNameBox.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                } else {
+                    scoutNameBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+                }
+
+                if(isScoutedTeamBoxEmpty){
+                    scoutedTeamBox.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                } else {
+                    scoutedTeamBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+                }
+
+                if(isQualsMatchBoxEmpty){
+                    qualsMatchBox.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                } else {
+                    qualsMatchBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+                }
+
+                if(isRobotPositionBoxEmpty){
+                    robotPositionBox.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                } else {
+                    robotPositionBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+                }
+
+                Toast.makeText(ScoutActivity.this, "Blank Box Error (did you forget something?)", Toast.LENGTH_SHORT).show();
+            } else {
+                scoutModel = new ScoutModel(MainActivity.maxDataID,
+                        scoutNameBox.getText().toString(),
+                        Integer.parseInt(scoutedTeamBox.getText().toString()),
+                        Integer.parseInt(qualsMatchBox.getText().toString()),
+                        robotPositionBox.getText().toString());
+
+                scoutNameBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+                scoutedTeamBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+                qualsMatchBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+                robotPositionBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+
+                DataBaseHelper dataBaseHelper = new DataBaseHelper(ScoutActivity.this);
+                boolean b = dataBaseHelper.addOne(scoutModel);
+                Toast.makeText(this, "Compiled Successfully!", Toast.LENGTH_LONG).show();
+            }
+
+        } catch (Exception e){
+            Toast.makeText(ScoutActivity.this, "Unknown Compiling Error Occurred", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void insertSavedData(int dataID){
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(ScoutActivity.this);
+        ScoutModel scoutModel = dataBaseHelper.getScoutModel(MainActivity.currentDataID);
+
+        if(scoutModel != null){
+            scoutNameBox.setText(scoutModel.getName());
+            scoutedTeamBox.setText(String.valueOf(scoutModel.getTeamScouted()));
+            qualsMatchBox.setText(String.valueOf(scoutModel.getQualNumber()));
+            robotPositionBox.setText(scoutModel.getRobotPosition());
+        }
+
+        // might do an else later, checking to see if people have already gone to this match before
+        // letting them know that their data might have error out if they had data here before
     }
 }
