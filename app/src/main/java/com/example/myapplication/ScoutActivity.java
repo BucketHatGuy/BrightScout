@@ -3,11 +3,9 @@ package com.example.myapplication;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -48,12 +46,14 @@ public class ScoutActivity extends AppCompatActivity {
         compileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkIfDataIsFilled();
+                if(allDataFilledCheck()){
+                    compileData();
+                }
             }
         });
     }
 
-    public void checkIfDataIsFilled(){
+    public boolean allDataFilledCheck(){
         boolean isScoutNameBoxEmpty = scoutNameBox.getText().toString().isEmpty();
         boolean isScoutedTeamBoxEmpty = scoutedTeamBox.getText().toString().isEmpty();
         boolean isQualsMatchBoxEmpty = qualsMatchBox.getText().toString().isEmpty();
@@ -88,26 +88,32 @@ public class ScoutActivity extends AppCompatActivity {
                 }
 
                 Toast.makeText(ScoutActivity.this, "Blank Box Error (did you forget something?)", Toast.LENGTH_SHORT).show();
+                return false;
             } else {
-                scoutModel = new ScoutModel(MainActivity.maxDataID,
-                        scoutNameBox.getText().toString(),
-                        Integer.parseInt(scoutedTeamBox.getText().toString()),
-                        Integer.parseInt(qualsMatchBox.getText().toString()),
-                        robotPositionBox.getText().toString());
-
-                scoutNameBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-                scoutedTeamBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-                qualsMatchBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-                robotPositionBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-
-                DataBaseHelper dataBaseHelper = new DataBaseHelper(ScoutActivity.this);
-                boolean b = dataBaseHelper.addOne(scoutModel);
-                Toast.makeText(this, "Compiled Successfully!", Toast.LENGTH_LONG).show();
+                return true;
             }
 
         } catch (Exception e){
             Toast.makeText(ScoutActivity.this, "Unknown Compiling Error Occurred", Toast.LENGTH_SHORT).show();
+            return false;
         }
+    }
+
+    public void compileData(){
+        ScoutModel scoutModel = new ScoutModel(MainActivity.maxDataID,
+                scoutNameBox.getText().toString(),
+                Integer.parseInt(scoutedTeamBox.getText().toString()),
+                Integer.parseInt(qualsMatchBox.getText().toString()),
+                robotPositionBox.getText().toString());
+
+        scoutNameBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+        scoutedTeamBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+        qualsMatchBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+        robotPositionBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(ScoutActivity.this);
+        boolean b = dataBaseHelper.addOne(scoutModel);
+        Toast.makeText(this, "Compiled Successfully!", Toast.LENGTH_LONG).show();
     }
 
     public void insertSavedData(int dataID){

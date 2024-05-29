@@ -40,7 +40,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 cursor.close();
                 return new ScoutModel(dataID, name, teamScouted, qualNumber, robotPosition);
             } else {
-                Log.d("not even close", "message");
+                Log.d("Error", "No table data found.");
 
                 db.close();
                 cursor.close();
@@ -56,6 +56,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // which... i'm not sure when to exactly execute, but i can't just do this during onCreate like I did before.
         SQLiteDatabase db = this.getWritableDatabase();
         String createTableStatement = "CREATE TABLE SCOUTING_TABLE (DATA_ID INT PRIMARY KEY, SCOUT_NAME TEXT, SCOUTED_TEAM INT, QUALS_MATCH INT, ROBOT_POSITION TEXT)";
+        try{
+            db.delete("SCOUTING_TABLE",null,null);
+        } catch(Exception e){
+            Log.d("Error", "Table not found. Opting to make new table.");
+        }
 
         db.execSQL(createTableStatement);
         Log.d("we made the table!","message");
@@ -70,6 +75,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         cv.put("SCOUTED_TEAM", scoutModel.getTeamScouted());
         cv.put("QUALS_MATCH", scoutModel.getQualNumber());
         cv.put("ROBOT_POSITION", scoutModel.getRobotPosition());
+
+        Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE WHERE DATA_ID=" + scoutModel.getDataID(), null);
+        if(cursor.moveToFirst()){
+            db.delete("SCOUTING_TABLE","DATA_ID=" + scoutModel.getDataID(), null);
+        }
 
         db.insert("SCOUTING_TABLE", null, cv);
 
