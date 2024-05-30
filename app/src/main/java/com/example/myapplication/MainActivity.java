@@ -1,18 +1,20 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -35,17 +37,43 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("BrightScout");
     }
 
     public void createMatch(View v){
-        Button matchButton = new Button(this);
-        matchButton.setText("Quals ???");
+        //declares layout
+        LinearLayout mainLayout = findViewById(R.id.linearLayout);
+
+        // set up params
+        LinearLayout.LayoutParams everythingLayoutParams = new LinearLayout.LayoutParams
+                (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+
+        LinearLayout.LayoutParams textLayoutParams = new LinearLayout.LayoutParams
+                (300, 100);
+
+        LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams
+                (300, 50);
+
+        LinearLayout.LayoutParams trashParams = new LinearLayout.LayoutParams
+                (100, 100);
+
+        LinearLayout.LayoutParams spacingLineParams = new LinearLayout.LayoutParams
+                (LinearLayout.LayoutParams.MATCH_PARENT, 40);
+
+        //set up layout for everything
+        LinearLayout everythingLayout = new LinearLayout(MainActivity.this);
+        everythingLayout.setOrientation(LinearLayout.HORIZONTAL);
+        everythingLayout.setGravity(Gravity.CENTER);
+
+        //set up layout for text
+        LinearLayout textLayout = new LinearLayout(MainActivity.this);
+        textLayout.setOrientation(LinearLayout.VERTICAL);
+        textLayout.setGravity(Gravity.CENTER);
         maxDataID++;
-        matchButton.setId(maxDataID);
-        matchButton.setOnClickListener(new View.OnClickListener() {
+        textLayout.setId(maxDataID);
+        textLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 currentDataID = v.getId();
@@ -53,22 +81,50 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        LinearLayout mainLayout = findViewById(R.id.linearLayout);
-        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams
-                (ConstraintLayout.LayoutParams.MATCH_PARENT,
-                        ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        // set up qual text
+        TextView qualText = new TextView(this);
+        qualText.setText("Quals ??");
+        qualText.setTypeface(null, Typeface.BOLD);
 
-        if(findViewById(R.id.textView2) != null){
-            TextView text = findViewById(R.id.textView2);
-            text.setVisibility(View.INVISIBLE);
+        // set up team text
+        TextView teamText = new TextView(this);
+        teamText.setText("Team ????");
 
-            Space spacer = findViewById(R.id.spacer);
-            spacer.setVisibility(View.INVISIBLE);
+        //set up trash button
+        ImageButton trashButton = new ImageButton(this);
+        trashButton.setImageResource(R.drawable.trash_can);
+        trashButton.setScaleType(ImageButton.ScaleType.FIT_XY);
+        trashButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,"id referenced=" + textLayout.getId(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
-            ImageView image = findViewById(R.id.imageView);
-            image.setVisibility(View.INVISIBLE);
-        }
+        //set up spacer
+        TextView spacingLine = new TextView(this);
+        spacingLine.setGravity(Gravity.CENTER);
+        spacingLine.setText("-------------------------------------------------------------");
 
-        mainLayout.addView(matchButton, layoutParams);
+
+        //sets default images and text to be not visible
+        TextView text = findViewById(R.id.textView2);
+        text.setVisibility(View.INVISIBLE);
+
+        Space spacer = findViewById(R.id.spacer);
+        spacer.setVisibility(View.INVISIBLE);
+
+        ImageView image = findViewById(R.id.imageView);
+        image.setVisibility(View.INVISIBLE);
+
+        //adds views to where needed
+        textLayout.addView(qualText, textViewParams);
+        textLayout.addView(teamText, textViewParams);
+
+        everythingLayout.addView(textLayout, textLayoutParams);
+        everythingLayout.addView(trashButton, trashParams);
+
+        mainLayout.addView(everythingLayout, everythingLayoutParams);
+        mainLayout.addView(spacingLine, spacingLineParams);
     }
 }
