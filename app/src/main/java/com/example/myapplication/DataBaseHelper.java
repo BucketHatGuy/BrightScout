@@ -9,6 +9,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+
 public class DataBaseHelper extends SQLiteOpenHelper {
     public DataBaseHelper(@Nullable Context context) {
         super(context, "scout.db", null, 1);
@@ -51,19 +53,43 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void createTable(){
-        // this will be used in the case of someone opening the app for the first time
-        // which... i'm not sure when to exactly execute, but i can't just do this during onCreate like I did before.
-        SQLiteDatabase db = this.getWritableDatabase();
-        String createTableStatement = "CREATE TABLE SCOUTING_TABLE (DATA_ID INT PRIMARY KEY, SCOUT_NAME TEXT, SCOUTED_TEAM INT, QUALS_MATCH INT, ROBOT_POSITION TEXT)";
-        try{
-            db.delete("SCOUTING_TABLE",null,null);
-        } catch(Exception e){
-            Log.d("Error", "Table not found. Opting to make new table.");
+    public ArrayList<ScoutModel> getTable(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE", null);
+        ArrayList<ScoutModel> returnList = new ArrayList<>();
+
+        if(cursor.moveToFirst()){
+            do{
+                int dataID = cursor.getInt(0);
+                String name = cursor.getString(1);
+                int teamScouted = cursor.getInt(2);
+                int qualNumber = cursor.getInt(3);
+                String robotPosition = cursor.getString(4);
+
+                returnList.add(new ScoutModel(dataID, name, teamScouted, qualNumber, robotPosition));
+            } while (cursor.moveToNext());
+
+            Log.d("we got the table", "message");
+
+            db.close();
+            cursor.close();
         }
 
+        return returnList;
+    }
+
+    public boolean checkForTable(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE", null);
+
+        return cursor.moveToFirst();
+    }
+
+    public void createTable(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String createTableStatement = "CREATE TABLE SCOUTING_TABLE (DATA_ID INT PRIMARY KEY, SCOUT_NAME TEXT, SCOUTED_TEAM INT, QUALS_MATCH INT, ROBOT_POSITION TEXT)";
         db.execSQL(createTableStatement);
-        Log.d("we made the table!","message");
+//        Log.d("we made the table!","message");
     }
 
     public boolean addOne(ScoutModel scoutModel){

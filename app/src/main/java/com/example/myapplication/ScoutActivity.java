@@ -41,7 +41,7 @@ public class ScoutActivity extends AppCompatActivity {
         qualsMatchBox = findViewById(R.id.qualsMatchBoxView);
         robotPositionBox = findViewById(R.id.robotPositionBoxView);
 
-        insertSavedData(MainActivity.currentDataID);
+        insertSavedData();
 
         compileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +116,7 @@ public class ScoutActivity extends AppCompatActivity {
         Toast.makeText(this, "Compiled Successfully!", Toast.LENGTH_LONG).show();
     }
 
-    public void insertSavedData(int dataID){
+    public void insertSavedData(){
         DataBaseHelper dataBaseHelper = new DataBaseHelper(ScoutActivity.this);
         ScoutModel scoutModel = dataBaseHelper.getScoutModel(MainActivity.currentDataID);
 
@@ -126,8 +126,5 @@ public class ScoutActivity extends AppCompatActivity {
             qualsMatchBox.setText(String.valueOf(scoutModel.getQualNumber()));
             robotPositionBox.setText(scoutModel.getRobotPosition());
         }
-
-        // might do an else later, checking to see if people have already gone to this match before
-        // letting them know that their data might have error out if they had data here before
     }
 }

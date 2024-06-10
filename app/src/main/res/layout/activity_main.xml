@@ -16,7 +16,6 @@
         android:clickable="true"
         android:contentDescription="Start a new match"
         android:focusable="true"
-        android:onClick="createMatch"
         app:backgroundTint="#F1FA3D"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +61,7 @@
                 android:layout_height="20dp" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
