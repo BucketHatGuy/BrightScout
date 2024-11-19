@@ -27,6 +27,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     public ScoutModel getScoutModel(int dataID){
+        try {
+            createTable();
+            System.out.println("No table detected, new table made.");
+        } catch(Exception e) {
+            System.out.println("Table detected, no table made.");
+            e.printStackTrace();
+        }
+
         try{
             SQLiteDatabase db = this.getReadableDatabase();
             Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE WHERE DATA_ID=" + dataID, null);
@@ -79,8 +87,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean checkForTable(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE", null);
+        Cursor cursor;
+
+        try{
+            SQLiteDatabase db = this.getReadableDatabase();
+            cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE", null);
+        } catch(Exception e) {
+            return false;
+        }
 
         return cursor.moveToFirst();
     }

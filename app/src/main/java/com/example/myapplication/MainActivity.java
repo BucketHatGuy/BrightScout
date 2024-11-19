@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,11 +27,15 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    static MainActivity mainActivity;
+
     static int maxDataID = 0;
     static int currentDataID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mainActivity = this;
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
@@ -45,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("BrightScout");
 
-        FloatingActionButton floatingActionButton = findViewById(R.id.floatingActionButton);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton newmatchFab = findViewById(R.id.newMatchFab);
+        newmatchFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createMatch(0);
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     public void createMatch(int dataID){
         //declares layout
         LinearLayout mainLayout = findViewById(R.id.linearLayout);
+        ScrollView scrollView = findViewById(R.id.matchListView);
 
         // set up params
         LinearLayout.LayoutParams everythingLayoutParams = new LinearLayout.LayoutParams
@@ -162,12 +168,17 @@ public class MainActivity extends AppCompatActivity {
         mainLayout.addView(spacingLine, spacingLineParams);
     }
 
+    public static MainActivity getInstance(){
+        return mainActivity;
+    }
+
     public void syncAllData(){
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
         Toast.makeText(MainActivity.this, "Syncing data...", Toast.LENGTH_LONG).show();
 
         if(dataBaseHelper.checkForTable()){
             ArrayList<ScoutModel> scoutingDataList = dataBaseHelper.getTable();
+//            Log.d("among us", scoutingDataList.toString());
 
             if(scoutingDataList.isEmpty()){
                 generateDefaultHomeScreen();
@@ -203,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
             try {
                 qualsText.setText("Quals " + scoutModel.getQualNumber());
                 teamText.setText("Team " + scoutModel.getTeamScouted());
-                Log.d("we're back?", "we got here, why is it wrong?");
             } catch(Exception e){
                 Log.d("Error", "i no no wanna");
             }

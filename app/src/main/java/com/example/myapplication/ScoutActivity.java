@@ -19,6 +19,7 @@ public class ScoutActivity extends AppCompatActivity {
 
     Button compileButton;
     EditText scoutNameBox, scoutedTeamBox, qualsMatchBox, robotPositionBox;
+    MainActivity mainActivity = MainActivity.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,17 @@ public class ScoutActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(allDataFilledCheck()){
                     compileData();
+                }
+
+                for (int id = 0; id == MainActivity.maxDataID; id++){
+                    Toast.makeText(ScoutActivity.this, MainActivity.maxDataID, Toast.LENGTH_SHORT).show();
+                    mainActivity.refreshMatchTitle(id);
+                }
+
+                try{
+                    mainActivity.refreshMatchTitle(MainActivity.currentDataID);
+                }catch(Exception e){
+                    e.printStackTrace();
                 }
             }
         });
@@ -100,7 +112,7 @@ public class ScoutActivity extends AppCompatActivity {
     }
 
     public void compileData(){
-        ScoutModel scoutModel = new ScoutModel(MainActivity.maxDataID,
+        ScoutModel scoutModel = new ScoutModel(MainActivity.currentDataID,
                 scoutNameBox.getText().toString(),
                 Integer.parseInt(scoutedTeamBox.getText().toString()),
                 Integer.parseInt(qualsMatchBox.getText().toString()),
