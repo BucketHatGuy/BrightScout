@@ -106,7 +106,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 //        Log.d("we made the table!","message");
     }
 
-    public boolean addOne(ScoutModel scoutModel){
+    public void addOne(ScoutModel scoutModel){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -116,13 +116,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         cv.put("QUALS_MATCH", scoutModel.getQualNumber());
         cv.put("ROBOT_POSITION", scoutModel.getRobotPosition());
 
+        // if there was data already there, then delete it? (i'm not sure this is necessary, but whatever)
         Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE WHERE DATA_ID=" + scoutModel.getDataID(), null);
         if(cursor.moveToFirst()){
             db.delete("SCOUTING_TABLE","DATA_ID=" + scoutModel.getDataID(), null);
         }
 
         db.insert("SCOUTING_TABLE", null, cv);
+    }
 
-        return true;
+    public void removeOne(int dataID){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete("SCOUTING_TABLE","DATA_ID=" + dataID, null);
     }
 }

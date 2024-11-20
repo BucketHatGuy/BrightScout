@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,15 +52,10 @@ public class ScoutActivity extends AppCompatActivity {
                     compileData();
                 }
 
-                for (int id = 0; id == MainActivity.maxDataID; id++){
-                    Toast.makeText(ScoutActivity.this, MainActivity.maxDataID, Toast.LENGTH_SHORT).show();
-                    mainActivity.refreshMatchTitle(id);
-                }
-
                 try{
                     mainActivity.refreshMatchTitle(MainActivity.currentDataID);
                 }catch(Exception e){
-                    e.printStackTrace();
+                    Log.d("Error", e.getStackTrace().toString());
                 }
             }
         });
@@ -124,7 +120,7 @@ public class ScoutActivity extends AppCompatActivity {
         robotPositionBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
 
         DataBaseHelper dataBaseHelper = new DataBaseHelper(ScoutActivity.this);
-        boolean b = dataBaseHelper.addOne(scoutModel);
+        dataBaseHelper.addOne(scoutModel);
         Toast.makeText(this, "Compiled Successfully!", Toast.LENGTH_LONG).show();
     }
 

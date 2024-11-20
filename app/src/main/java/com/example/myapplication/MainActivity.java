@@ -54,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
         newmatchFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createMatch(0);
+                maxDataID++;
+                createMatch(maxDataID);
             }
         });
 
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         //declares layout
         LinearLayout mainLayout = findViewById(R.id.linearLayout);
         ScrollView scrollView = findViewById(R.id.matchListView);
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
 
         // set up params
         LinearLayout.LayoutParams everythingLayoutParams = new LinearLayout.LayoutParams
@@ -96,14 +98,8 @@ public class MainActivity extends AppCompatActivity {
         textLayout.setOrientation(LinearLayout.VERTICAL);
         textLayout.setGravity(Gravity.CENTER);
 
-        if(dataID == 0){
-            maxDataID++;
-            textLayout.setId(maxDataID);
-            currentDataID = maxDataID;
-        } else {
-            textLayout.setId(dataID);
-            currentDataID = dataID;
-        }
+        textLayout.setId(dataID);
+        currentDataID = dataID;
 
         textLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +123,11 @@ public class MainActivity extends AppCompatActivity {
         teamText.setId(2000 + dataID);
         Log.d("realTeamTextId", String.valueOf(teamText.getId()));
 
+        //set up spacer
+        TextView spacingLine = new TextView(this);
+        spacingLine.setGravity(Gravity.CENTER);
+        spacingLine.setText("-------------------------------------------------------------");
+
         //set up trash button
         ImageButton trashButton = new ImageButton(this);
         trashButton.setImageResource(R.drawable.trash_can);
@@ -135,14 +136,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this,"id referenced=" + textLayout.getId(), Toast.LENGTH_SHORT).show();
+                //TODO: find a way to delete stuff
+                mainLayout.removeView(everythingLayout);
+                mainLayout.removeView(spacingLine);
+                dataBaseHelper.removeOne(textLayout.getId());
             }
         });
-
-        //set up spacer
-        TextView spacingLine = new TextView(this);
-        spacingLine.setGravity(Gravity.CENTER);
-        spacingLine.setText("-------------------------------------------------------------");
-
 
         //sets default images and text to be not visible
         TextView text = findViewById(R.id.textView);
