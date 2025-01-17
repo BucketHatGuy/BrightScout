@@ -1,5 +1,8 @@
 package com.example.myapplication;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -23,6 +26,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -56,6 +64,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 maxDataID++;
                 createMatch(maxDataID);
+            }
+        });
+
+        FloatingActionButton newMatchFab2 = findViewById(R.id.newMatchFab7);
+        newMatchFab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, makeCSVString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -136,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this,"id referenced=" + textLayout.getId(), Toast.LENGTH_SHORT).show();
-                //TODO: find a way to delete stuff
                 mainLayout.removeView(everythingLayout);
                 mainLayout.removeView(spacingLine);
                 dataBaseHelper.removeOne(textLayout.getId());
@@ -235,4 +250,26 @@ public class MainActivity extends AppCompatActivity {
         text.setVisibility(View.VISIBLE);
         spacer.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
     }
+
+    public String makeCSVString(){
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
+        ArrayList<ScoutModel> scoutingDataList = dataBaseHelper.getTable();
+        StringBuilder csvString = new StringBuilder();
+
+        for (ScoutModel scoutModel : scoutingDataList) {
+            csvString.append(scoutModel.getName()).append(",");
+            csvString.append(scoutModel.getTeamScouted()).append(",");
+            csvString.append(scoutModel.getQualNumber()).append(",");
+            csvString.append(scoutModel.getRobotPosition());
+
+            csvString.append("\n");
+        }
+
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("label", csvString.toString());
+        clipboard.setPrimaryClip(clip);
+
+        return csvString.toString();
+    }
+
 }
