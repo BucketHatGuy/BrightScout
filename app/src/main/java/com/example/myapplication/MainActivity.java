@@ -9,6 +9,8 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("BrightScout");
 
+
         FloatingActionButton newmatchFab = findViewById(R.id.newMatchFab);
         newmatchFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +70,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         syncAllData();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add("Export data to CSV");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getTitle().equals("Export data to CSV")){
+            Toast.makeText(this, "Button was pressed!", Toast.LENGTH_LONG).show();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void createMatch(int dataID){
@@ -239,5 +258,21 @@ public class MainActivity extends AppCompatActivity {
         TextView text = findViewById(R.id.textView);
         text.setVisibility(View.VISIBLE);
         spacer.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+    }
+
+    public String makeCSVString(){
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
+        ArrayList<ScoutModel> scoutingDataList = dataBaseHelper.getTable();
+        StringBuilder csvString = new StringBuilder();
+
+        for (ScoutModel scoutModel : scoutingDataList) {
+            csvString.append(scoutModel.getName()).append(",");
+            csvString.append(scoutModel.getTeamScouted()).append(",");
+            csvString.append(scoutModel.getQualNumber()).append(",");
+            csvString.append(scoutModel.getRobotPosition());
+            csvString.append("\n");
+        }
+
+        return csvString.toString();
     }
 }
