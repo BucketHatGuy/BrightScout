@@ -65,16 +65,6 @@ public class MainActivity extends AppCompatActivity {
                 createMatch(maxDataID);
             }
         });
-
-        FloatingActionButton newMatchFab2 = findViewById(R.id.newMatchFab7);
-        newMatchFab2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, makeCSVString(), Toast.LENGTH_SHORT).show();
-                generateQRCode(makeCSVString());
-            }
-        });
-
         syncAllData();
     }
 
@@ -249,38 +239,5 @@ public class MainActivity extends AppCompatActivity {
         TextView text = findViewById(R.id.textView);
         text.setVisibility(View.VISIBLE);
         spacer.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-    }
-
-    public String makeCSVString(){
-        DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
-        ArrayList<ScoutModel> scoutingDataList = dataBaseHelper.getTable();
-        StringBuilder csvString = new StringBuilder();
-
-        for (ScoutModel scoutModel : scoutingDataList) {
-            csvString.append(scoutModel.getName()).append(",");
-            csvString.append(scoutModel.getTeamScouted()).append(",");
-            csvString.append(scoutModel.getQualNumber()).append(",");
-            csvString.append(scoutModel.getRobotPosition());
-
-            csvString.append("\n");
-        }
-
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("label", csvString.toString());
-        clipboard.setPrimaryClip(clip);
-
-        return csvString.toString();
-    }
-
-    private void generateQRCode(String text) {
-        ImageView imageView6 = findViewById(R.id.imageView6);
-        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-        try {
-            Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 400, 400);
-            imageView6.setImageBitmap(bitmap);
-        }
-        catch (WriterException e) {
-
-        }
     }
 }

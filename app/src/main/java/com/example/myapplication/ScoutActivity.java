@@ -1,12 +1,19 @@
 package com.example.myapplication;
 
+import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -16,11 +23,19 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
+
+import java.util.ArrayList;
+
 public class ScoutActivity extends AppCompatActivity {
 
     Button compileButton;
     EditText scoutNameBox, scoutedTeamBox, qualsMatchBox, robotPositionBox;
     MainActivity mainActivity = MainActivity.getInstance();
+    Dialog dialog;
+    Button dialogButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +52,21 @@ public class ScoutActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("BrightScout");
 
+        dialog = new Dialog(ScoutActivity.this);
+        dialog.setContentView(R.layout.qrcode_dialogue_box);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.qrcode_dialogue_bg));
+        dialog.setCancelable(false);
+
+        dialogButton = dialog.findViewById(R.id.dismissButton);
+
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
         compileButton = findViewById(R.id.compileButton);
         scoutNameBox = findViewById(R.id.scoutNameBoxView);
         scoutedTeamBox = findViewById(R.id.scoutedTeamBoxView);
@@ -50,6 +80,7 @@ public class ScoutActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(allDataFilledCheck()){
                     compileData();
+                    dialog.show();
                 }
 
                 try{
@@ -122,6 +153,8 @@ public class ScoutActivity extends AppCompatActivity {
         DataBaseHelper dataBaseHelper = new DataBaseHelper(ScoutActivity.this);
         dataBaseHelper.addOne(scoutModel);
         Toast.makeText(this, "Compiled Successfully!", Toast.LENGTH_LONG).show();
+
+        generateQRCode(makeCSVString(scoutModel));
     }
 
     public void insertSavedData(){
@@ -134,5 +167,32 @@ public class ScoutActivity extends AppCompatActivity {
             qualsMatchBox.setText(String.valueOf(scoutModel.getQualNumber()));
             robotPositionBox.setText(scoutModel.getRobotPosition());
         }
+    }
+
+    private void generateQRCode(String text) {
+        ImageView imageView3 = dialog.findViewById(R.id.imageView3);
+        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+        try {
+            Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 400, 400);
+            imageView3.setImageBitmap(bitmap);
+        }
+        catch (WriterException e) {
+            Log.d("Error", "Something went wrong at generateQRCode()");
+        }
+    }
+
+    public String makeCSVString(ScoutModel scoutModel){
+        StringBuilder csvString = new StringBuilder();
+
+        csvString.append(scoutModel.getName()).append(",");
+        csvString.append(scoutModel.getTeamScouted()).append(",");
+        csvString.append(scoutModel.getQualNumber()).append(",");
+        csvString.append(scoutModel.getRobotPosition());
+
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("label", csvString.toString());
+        clipboard.setPrimaryClip(clip);
+
+        return csvString.toString();
     }
 }
