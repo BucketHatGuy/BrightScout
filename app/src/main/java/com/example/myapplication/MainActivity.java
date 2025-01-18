@@ -1,13 +1,8 @@
 package com.example.myapplication;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -23,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -30,9 +26,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -64,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("BrightScout");
 
-
         FloatingActionButton newmatchFab = findViewById(R.id.newMatchFab);
         newmatchFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add("Export data to CSV");
+        menu.add("Import via QR");
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -98,9 +93,25 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        if(item.getTitle().equals("Import via QR")) {
+            IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
+            intentIntegrator.setPrompt("Please scan a valid BrightScout QR Code.");
+            intentIntegrator.setOrientationLocked(true);
+            intentIntegrator.initiateScan();
+        }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
+        if(intentResult != null){
+            if(intentResult.getContents() != null){
+                Toast.makeText(MainActivity.this, intentResult.getContents(), Toast.LENGTH_LONG).show();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     public void createMatch(int dataID){
         //declares layout
@@ -175,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
         trashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"id referenced=" + textLayout.getId(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"Match data has been deleted.", Toast.LENGTH_SHORT).show();
                 mainLayout.removeView(everythingLayout);
                 mainLayout.removeView(spacingLine);
                 dataBaseHelper.removeOne(textLayout.getId());

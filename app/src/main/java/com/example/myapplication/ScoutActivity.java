@@ -173,7 +173,7 @@ public class ScoutActivity extends AppCompatActivity {
         ImageView imageView3 = dialog.findViewById(R.id.imageView3);
         BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
         try {
-            Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 400, 400);
+            Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 1000, 1000);
             imageView3.setImageBitmap(bitmap);
         }
         catch (WriterException e) {

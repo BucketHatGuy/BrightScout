@@ -30,12 +30,13 @@
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="#FAFAFA" />
 
     <ScrollView
         android:id="@+id/matchListView"
-        android:layout_width="400dp"
-        android:layout_height="300dp"
+        android:layout_width="0dp"
+        android:layout_height="600dp"
         android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
         android:foregroundGravity="center"
@@ -46,8 +47,8 @@
 
         <LinearLayout
             android:id="@+id/linearLayout"
-            android:layout_width="400dp"
-            android:layout_height="400dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <ImageView
