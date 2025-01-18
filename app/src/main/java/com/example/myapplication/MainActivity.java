@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -33,6 +34,9 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -81,11 +85,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getTitle().equals("Export data to CSV")){
-            Toast.makeText(this, "Button was pressed!", Toast.LENGTH_LONG).show();
+            File file = MainActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+            try {
+                FileWriter fileWriter = new FileWriter(file + "/BrightScoutExport.txt");
+                Log.d("file path", file + "/BrightScoutExport.txt");
+                fileWriter.write(makeCSVString());
+                fileWriter.close();
+                Toast.makeText(this, "yay!", Toast.LENGTH_LONG).show();
+            } catch (IOException e) {
+                Toast.makeText(this, "an error occured", Toast.LENGTH_LONG).show();
+                throw new RuntimeException(e);
+            }
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
     public void createMatch(int dataID){
         //declares layout
