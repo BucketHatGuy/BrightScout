@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getTitle().equals("Export data to CSV")){
-            File file = MainActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+            File file = MainActivity.this.getExternalFilesDir(null);
             try {
                 FileWriter fileWriter = new FileWriter(file + "/BrightScoutExport.txt");
                 Log.d("file path", file + "/BrightScoutExport.txt");
