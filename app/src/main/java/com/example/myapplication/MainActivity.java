@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,12 +26,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -72,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, makeCSVString(), Toast.LENGTH_SHORT).show();
+                generateQRCode(makeCSVString());
             }
         });
 
@@ -272,4 +272,15 @@ public class MainActivity extends AppCompatActivity {
         return csvString.toString();
     }
 
+    private void generateQRCode(String text) {
+        ImageView imageView6 = findViewById(R.id.imageView6);
+        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+        try {
+            Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 400, 400);
+            imageView6.setImageBitmap(bitmap);
+        }
+        catch (WriterException e) {
+
+        }
+    }
 }

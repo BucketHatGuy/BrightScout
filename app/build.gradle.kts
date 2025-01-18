@@ -32,6 +32,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.core)
+    implementation(libs.zxing.android.embedded)
 
     implementation(libs.appcompat)
     implementation(libs.material)
