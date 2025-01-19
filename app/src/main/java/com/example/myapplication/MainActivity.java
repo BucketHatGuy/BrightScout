@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
         if(intentResult != null){
             if(intentResult.getContents() != null){
-                Toast.makeText(MainActivity.this, intentResult.getContents(), Toast.LENGTH_LONG).show();
+                compileQRData(intentResult.getContents());
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -300,5 +300,32 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return csvString.toString();
+    }
+
+    public void compileQRData(String dataString){
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
+        String[] dataList = new String[4];
+
+        maxDataID++;
+
+        try {
+            dataList = dataString.split(",");
+
+            ScoutModel scoutModel = new ScoutModel(MainActivity.maxDataID,
+                    dataList[0],
+                    Integer.parseInt(dataList[1]),
+                    Integer.parseInt(dataList[2]),
+                    dataList[3]);
+
+            dataBaseHelper.addOne(scoutModel);
+            createMatch(maxDataID);
+            refreshMatchTitle(maxDataID);
+
+            Toast.makeText(MainActivity.this, "Compiling Successful!", Toast.LENGTH_SHORT).show();
+
+        } catch (Exception e) {
+            Toast.makeText(MainActivity.this, "Error while compiling data.", Toast.LENGTH_SHORT).show();
+            throw new RuntimeException(e);
+        }
     }
 }
