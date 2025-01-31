@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
@@ -26,7 +27,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public ScoutModel getScoutModel(int dataID){
+    public ArrayList<String> getScoutingData(int dataID){
         try {
             createTable();
             System.out.println("No table detected, new table made.");
@@ -35,55 +36,53 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
 
+        ArrayList<String> scoutingDataArray = new ArrayList<>();
+
         try{
             SQLiteDatabase db = this.getReadableDatabase();
             Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE WHERE DATA_ID=" + dataID, null);
 
-            if(cursor.moveToFirst()){
-                dataID = cursor.getInt(0);
-                String name = cursor.getString(1);
-                int teamScouted = cursor.getInt(2);
-                int qualNumber = cursor.getInt(3);
-                String robotPosition = cursor.getString(4);
+            int columnCount = cursor.getColumnCount();
 
-                db.close();
-                cursor.close();
-                return new ScoutModel(dataID, name, teamScouted, qualNumber, robotPosition);
-            } else {
-                Log.d("Error", "No table data found.");
-
-                db.close();
-                cursor.close();
-                return null;
+            while (cursor.moveToNext()) {
+                for (int i = 1; i <= columnCount; i++) {
+                    scoutingDataArray.add(cursor.getString(i));
+                    if (i < columnCount) {
+                        scoutingDataArray.add(",");
+                    }
+                }
+                scoutingDataArray.add("\n");
             }
         } catch(Exception exception){
             return null;
         }
+
+        return scoutingDataArray;
     }
 
-    public ArrayList<ScoutModel> getTable(){
+    public ArrayList<ArrayList<String>> getTable(){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE", null);
-        ArrayList<ScoutModel> returnList = new ArrayList<>();
+        ArrayList<ArrayList<String>> dataTable = new ArrayList<>();
 
-        if(cursor.moveToFirst()){
-            do{
-                int dataID = cursor.getInt(0);
-                String name = cursor.getString(1);
-                int teamScouted = cursor.getInt(2);
-                int qualNumber = cursor.getInt(3);
-                String robotPosition = cursor.getString(4);
+        int columnCount = cursor.getColumnCount();
 
-                returnList.add(new ScoutModel(dataID, name, teamScouted, qualNumber, robotPosition));
-            } while (cursor.moveToNext());
+        while (cursor.moveToNext()){
+            ArrayList<String> scoutModel = new ArrayList<>();
 
-            Log.d("we got the table", "message");
+            for (int i = 1; i <= columnCount; i++) {
+                scoutModel.add(cursor.getString(i));
+            }
 
-            db.close();
-            cursor.close();
+            dataTable.add(scoutModel);
         }
 
-        return returnList;
+        Log.d("we got the table", "message");
+
+        db.close();
+        cursor.close();
+
+        return dataTable;
     }
 
     public boolean checkForTable(){
@@ -106,20 +105,31 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 //        Log.d("we made the table!","message");
     }
 
-    public void addOne(ScoutModel scoutModel){
+    public void addOne(ArrayList<String> scoutModel){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put("DATA_ID", scoutModel.getDataID());
-        cv.put("SCOUT_NAME", scoutModel.getName());
-        cv.put("SCOUTED_TEAM", scoutModel.getTeamScouted());
-        cv.put("QUALS_MATCH", scoutModel.getQualNumber());
-        cv.put("ROBOT_POSITION", scoutModel.getRobotPosition());
+        cv.put("DATA_ID", scoutModel.get(0));
+        cv.put("SCOUT_NAME", scoutModel.get(1));
+        cv.put("SCOUTED_TEAM", scoutModel.get(2));
+        cv.put("QUALS_MATCH", scoutModel.get(3));
+        cv.put("ROBOT_POSITION", scoutModel.get(4));
+        cv.put("AUTO_MOVE", scoutModel.get(5));
+        cv.put("AUTO_SCORED_CORAL", scoutModel.get(6));
+        cv.put("AUTO_FAILED_CORAL", scoutModel.get(7));
+        cv.put("AUTO_ALGAE_REMOVAL", scoutModel.get(8));
+        cv.put("TELEOP_SCORED_CORAL", scoutModel.get(9));
+        cv.put("TELEOP_MISSED_CORAL", scoutModel.get(10));
+        cv.put("TELEOP_ALGAE_REMOVAL", scoutModel.get(11));
+        cv.put("TELEOP_PROCESSOR", scoutModel.get(12));
+        cv.put("TELEOP_NET", scoutModel.get(13));
+        cv.put("END_GAME", scoutModel.get(14));
+        cv.put("COMMENTS", scoutModel.get(15));
 
         // if there was data already there, then delete it? (i'm not sure this is necessary, but whatever)
-        Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE WHERE DATA_ID=" + scoutModel.getDataID(), null);
+        Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE WHERE DATA_ID=" + scoutModel.get(0), null);
         if(cursor.moveToFirst()){
-            db.delete("SCOUTING_TABLE","DATA_ID=" + scoutModel.getDataID(), null);
+            db.delete("SCOUTING_TABLE","DATA_ID=" + scoutModel.get(0), null);
         }
 
         db.insert("SCOUTING_TABLE", null, cv);

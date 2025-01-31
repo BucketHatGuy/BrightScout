@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -226,18 +227,17 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, "Syncing data...", Toast.LENGTH_LONG).show();
 
         if(dataBaseHelper.checkForTable()){
-            ArrayList<ScoutModel> scoutingDataList = dataBaseHelper.getTable();
-//            Log.d("among us", scoutingDataList.toString());
+            ArrayList<ArrayList<String>> scoutingDataList = dataBaseHelper.getTable();
 
             if(scoutingDataList.isEmpty()){
                 generateDefaultHomeScreen();
             } else {
-                for (ScoutModel scoutModel : scoutingDataList) {
-                    createMatch(scoutModel.getDataID());
-                    refreshMatchTitle(scoutModel.getDataID());
+                for (ArrayList<String> scoutModel : scoutingDataList) {
+                    createMatch(Integer.parseInt(scoutModel.get(0)));
+                    refreshMatchTitle(Integer.parseInt(scoutModel.get(0)));
 
-                    if(maxDataID < scoutModel.getDataID()){
-                        maxDataID = scoutModel.getDataID();
+                    if(maxDataID < Integer.parseInt(scoutModel.get(0))){
+                        maxDataID = Integer.parseInt(scoutModel.get(0));
                     }
                 }
             }
@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void refreshMatchTitle(int dataID){
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
-        ScoutModel scoutModel = dataBaseHelper.getScoutModel(dataID);
+        ArrayList<String> scoutModel = dataBaseHelper.getScoutingData(dataID);
 
         if(scoutModel != null){
             int qualId = 1000 + dataID;
@@ -261,8 +261,8 @@ public class MainActivity extends AppCompatActivity {
             Log.d("teamTextIdAttempted", String.valueOf(2000 + dataID));
 
             try {
-                qualsText.setText("Quals " + scoutModel.getQualNumber());
-                teamText.setText("Team " + scoutModel.getTeamScouted());
+                qualsText.setText("Quals " + scoutModel.get(3));
+                teamText.setText("Team " + scoutModel.get(2));
             } catch(Exception e){
                 Log.d("Error", "i no no wanna");
             }
@@ -288,14 +288,22 @@ public class MainActivity extends AppCompatActivity {
 
     public String makeCSVString(){
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
-        ArrayList<ScoutModel> scoutingDataList = dataBaseHelper.getTable();
+        ArrayList<ArrayList<String>> scoutingDataList = dataBaseHelper.getTable();
         StringBuilder csvString = new StringBuilder();
+        int columnTotal = 0;
+        int columnNumber = 0;
 
-        for (ScoutModel scoutModel : scoutingDataList) {
-            csvString.append(scoutModel.getName()).append(",");
-            csvString.append(scoutModel.getTeamScouted()).append(",");
-            csvString.append(scoutModel.getQualNumber()).append(",");
-            csvString.append(scoutModel.getRobotPosition());
+        for (ArrayList<String> scoutModel : scoutingDataList) {
+            columnTotal = scoutModel.size();
+
+            for (String string : scoutModel){
+                csvString.append(string);
+                if(columnNumber != columnTotal){
+                    csvString.append(",");
+                }
+            }
+            columnNumber++;
+
             csvString.append("\n");
         }
 
@@ -311,11 +319,9 @@ public class MainActivity extends AppCompatActivity {
         try {
             dataList = dataString.split(",");
 
-            ScoutModel scoutModel = new ScoutModel(MainActivity.maxDataID,
-                    dataList[0],
-                    Integer.parseInt(dataList[1]),
-                    Integer.parseInt(dataList[2]),
-                    dataList[3]);
+            ArrayList<String> scoutModel = new ArrayList<>();
+
+            Collections.addAll(scoutModel, dataList);
 
             dataBaseHelper.addOne(scoutModel);
             createMatch(maxDataID);

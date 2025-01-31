@@ -98,8 +98,6 @@ public class ScoutActivity extends AppCompatActivity {
         boolean isQualsMatchBoxEmpty = qualsMatchBox.getText().toString().isEmpty();
         boolean isRobotPositionBoxEmpty = robotPositionBox.getText().toString().isEmpty();
 
-        ScoutModel scoutModel = null;
-
         try {
             if(isScoutNameBoxEmpty || isScoutedTeamBoxEmpty || isQualsMatchBoxEmpty || isRobotPositionBoxEmpty){
                 if(isScoutNameBoxEmpty){
@@ -139,11 +137,13 @@ public class ScoutActivity extends AppCompatActivity {
     }
 
     public void compileData(){
-        ScoutModel scoutModel = new ScoutModel(MainActivity.currentDataID,
-                scoutNameBox.getText().toString(),
-                Integer.parseInt(scoutedTeamBox.getText().toString()),
-                Integer.parseInt(qualsMatchBox.getText().toString()),
-                robotPositionBox.getText().toString());
+        ArrayList<String> scoutModel = new ArrayList<>();
+
+        scoutModel.add(String.valueOf(MainActivity.currentDataID));
+        scoutModel.add(scoutNameBox.getText().toString());
+        scoutModel.add(scoutedTeamBox.getText().toString());
+        scoutModel.add(scoutNameBox.getText().toString());
+        scoutModel.add(scoutNameBox.getText().toString());
 
         scoutNameBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
         scoutedTeamBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
@@ -159,13 +159,13 @@ public class ScoutActivity extends AppCompatActivity {
 
     public void insertSavedData(){
         DataBaseHelper dataBaseHelper = new DataBaseHelper(ScoutActivity.this);
-        ScoutModel scoutModel = dataBaseHelper.getScoutModel(MainActivity.currentDataID);
+        ArrayList<String> scoutModel = dataBaseHelper.getScoutingData(MainActivity.currentDataID);
 
         if(scoutModel != null){
-            scoutNameBox.setText(scoutModel.getName());
-            scoutedTeamBox.setText(String.valueOf(scoutModel.getTeamScouted()));
-            qualsMatchBox.setText(String.valueOf(scoutModel.getQualNumber()));
-            robotPositionBox.setText(scoutModel.getRobotPosition());
+            scoutNameBox.setText(scoutModel.get(1));
+            scoutedTeamBox.setText(String.valueOf(scoutModel.get(2)));
+            qualsMatchBox.setText(String.valueOf(scoutModel.get(3)));
+            robotPositionBox.setText(scoutModel.get(4));
         }
     }
 
@@ -181,13 +181,13 @@ public class ScoutActivity extends AppCompatActivity {
         }
     }
 
-    public String makeCSVString(ScoutModel scoutModel){
+    public String makeCSVString(ArrayList<String> scoutModel){
         StringBuilder csvString = new StringBuilder();
 
-        csvString.append(scoutModel.getName()).append(",");
-        csvString.append(scoutModel.getTeamScouted()).append(",");
-        csvString.append(scoutModel.getQualNumber()).append(",");
-        csvString.append(scoutModel.getRobotPosition());
+        csvString.append(scoutModel.get(1)).append(",");
+        csvString.append(scoutModel.get(2)).append(",");
+        csvString.append(scoutModel.get(3)).append(",");
+        csvString.append(scoutModel.get(4));
 
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("label", csvString.toString());
