@@ -115,9 +115,7 @@ public class ScoutActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(allDataFilledCheck()){
-                    Log.d("Marker", "Through allDataFilledCheck");
                     compileData();
-                    Log.d("Marker", "Through compileData");
                     dialog.show();
                 }
 
@@ -269,8 +267,6 @@ public class ScoutActivity extends AppCompatActivity {
             Log.d("Error", e.getMessage());
             Toast.makeText(this, "No data to insert, leaving default", Toast.LENGTH_SHORT).show();
         }
-
-//        Log.d("Marker", "We're at insertSavedData!");
     }
 
     private void generateQRCode(String text) {
@@ -309,7 +305,6 @@ public class ScoutActivity extends AppCompatActivity {
     }
 
     public void addAndMinusButtonHandler(View view){
-        Log.d("Marker", "Initialized");
         String buttonName = getResources().getResourceEntryName(view.getId());
         String buttonNameFiltered = "";
         TextView textView;
@@ -327,9 +322,6 @@ public class ScoutActivity extends AppCompatActivity {
             } else {
                 textView.setText(String.valueOf(0));
             }
-
-            Log.d("Marker", "Minus");
-
         } else if (buttonName.contains("Add")){
             buttonNameFiltered = buttonName.replaceAll("AddButton", "");
             int resID = getResources().getIdentifier(buttonNameFiltered + "Text", "id", getPackageName());
@@ -339,7 +331,6 @@ public class ScoutActivity extends AppCompatActivity {
 
             textView.setText(String.valueOf(number + 1));
 
-            Log.d("Marker", "Add");
         } else {
             Toast.makeText(this, "An error has occured pressing this button", Toast.LENGTH_LONG).show();
         }

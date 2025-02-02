@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
     public DataBaseHelper(@Nullable Context context) {
@@ -58,13 +59,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return scoutingDataArray;
     }
 
-    public ArrayList<ArrayList<String>> getTable(){
+    public ArrayList<ArrayList<String>> getTable(boolean columnNamesRequested){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE", null);
         ArrayList<ArrayList<String>> dataTable = new ArrayList<>();
 
         int columnCount = cursor.getColumnCount();
-        Log.d("ColumnCount", String.valueOf(cursor.getColumnCount()));
+
+        if(columnNamesRequested) {
+            ArrayList<String> columnNames = new ArrayList<>();
+            Collections.addAll(columnNames, cursor.getColumnNames());
+            dataTable.add(columnNames);
+        }
 
         while (cursor.moveToNext()){
             ArrayList<String> scoutModel = new ArrayList<>();
@@ -75,8 +81,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
             dataTable.add(scoutModel);
         }
-
-        Log.d("we got the table", "message");
 
         db.close();
         cursor.close();

@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mainActivity = this;
-        Log.d("Marker", "Marker 7");
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -85,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
             File file = MainActivity.this.getExternalFilesDir(null);
             try {
                 FileWriter fileWriter = new FileWriter(file + "/BrightScoutExport.txt");
-                Log.d("file path", file + "/BrightScoutExport.txt");
                 fileWriter.write(makeCSVString());
                 fileWriter.close();
                 Toast.makeText(this, "yay!", Toast.LENGTH_LONG).show();
@@ -167,14 +165,12 @@ public class MainActivity extends AppCompatActivity {
         qualText.setText("Quals ??");
         qualText.setTypeface(null, Typeface.BOLD);
         qualText.setId(1000 + dataID);
-        Log.d("realQualsTextId", String.valueOf(qualText.getId()));
 
         // set up team text
         TextView teamText = new TextView(this);
         teamText.setText("Team ????");
         teamText.setId(View.generateViewId());
         teamText.setId(2000 + dataID);
-        Log.d("realTeamTextId", String.valueOf(teamText.getId()));
 
         //set up spacer
         TextView spacingLine = new TextView(this);
@@ -224,18 +220,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void syncAllData(){
-        Log.d("Marker", "Marker 3");
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
         Toast.makeText(MainActivity.this, "Syncing data...", Toast.LENGTH_LONG).show();
 
         if(dataBaseHelper.checkForTable()){
-            ArrayList<ArrayList<String>> scoutingDataList = dataBaseHelper.getTable();
+            ArrayList<ArrayList<String>> scoutingDataList = dataBaseHelper.getTable(false);
 
             if(scoutingDataList.isEmpty()){
                 generateDefaultHomeScreen();
             } else {
                 for (ArrayList<String> scoutModel : scoutingDataList) {
-                    Log.d("ID NUMBER", scoutModel.get(0));
                     createMatch(Integer.parseInt(scoutModel.get(0)));
                     refreshMatchTitle(Integer.parseInt(scoutModel.get(0)));
 
@@ -248,7 +242,6 @@ public class MainActivity extends AppCompatActivity {
             dataBaseHelper.createTable();
             generateDefaultHomeScreen();
         }
-        Log.d("Marker", "Marker 4");
     }
 
     public void refreshMatchTitle(int dataID){
@@ -258,17 +251,15 @@ public class MainActivity extends AppCompatActivity {
         if(scoutModel != null){
             int qualId = 1000 + dataID;
             TextView qualsText = findViewById(qualId);
-            Log.d("qualsTextIdAttempted", String.valueOf(1000 + dataID));
 
             int teamId = 2000 + dataID;
             TextView teamText = findViewById(teamId);
-            Log.d("teamTextIdAttempted", String.valueOf(2000 + dataID));
 
             try {
                 qualsText.setText("Quals " + scoutModel.get(3));
                 teamText.setText("Team " + scoutModel.get(2));
             } catch(Exception e){
-                Log.d("Error", "i no no wanna");
+                Log.d("Error", "Error refreshing match title.");
             }
         } else {
             Log.d("Error", "Scout Model returned Null");
@@ -291,25 +282,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String makeCSVString(){
-        Log.d("hi", "hi");
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
-        ArrayList<ArrayList<String>> scoutingDataList = dataBaseHelper.getTable();
+        ArrayList<ArrayList<String>> scoutingDataList = dataBaseHelper.getTable(true);
         StringBuilder csvString = new StringBuilder();
         int columnTotal = 0;
         int columnNumber = 0;
 
-        Log.d("what", "what");
-
         for (ArrayList<String> scoutModel : scoutingDataList) {
             columnTotal = scoutModel.size();
+            columnNumber = 0;
 
             for (String string : scoutModel){
+                columnNumber++;
                 csvString.append(string);
                 if(columnNumber != columnTotal){
                     csvString.append(",");
                 }
             }
-            columnNumber++;
 
             csvString.append("\n");
         }
