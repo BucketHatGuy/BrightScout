@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mainActivity = this;
+        Log.d("Marker", "Marker 7");
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 createMatch(maxDataID);
             }
         });
-        syncAllData();
+        // syncAllData();
     }
 
     @Override
@@ -223,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void syncAllData(){
+        Log.d("Marker", "Marker 3");
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
         Toast.makeText(MainActivity.this, "Syncing data...", Toast.LENGTH_LONG).show();
 
@@ -245,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
             dataBaseHelper.createTable();
             generateDefaultHomeScreen();
         }
+        Log.d("Marker", "Marker 4");
     }
 
     public void refreshMatchTitle(int dataID){
