@@ -203,10 +203,10 @@ public class ScoutActivity extends AppCompatActivity {
         ArrayList<String> scoutModel = new ArrayList<>();
 
         scoutModel.add(String.valueOf(MainActivity.currentDataID));
-        scoutModel.add(scoutNameBox.getText().toString());
+        scoutModel.add(scoutNameBox.getText().toString().replaceAll("[^A-Za-z0-9 ]",""));
         scoutModel.add(scoutedTeamBox.getText().toString());
         scoutModel.add(qualsMatchBox.getText().toString());
-        scoutModel.add(robotPositionBox.getText().toString());
+        scoutModel.add(robotPositionBox.getText().toString().replaceAll("[^A-Za-z0-9 ]",""));
         scoutModel.add(moveCheckbox.isChecked() ? "Yes" : "No");
         scoutModel.add(autoL1Text.getText().toString());
         scoutModel.add(autoL2Text.getText().toString());
@@ -223,7 +223,7 @@ public class ScoutActivity extends AppCompatActivity {
         scoutModel.add(processorText.getText().toString());
         scoutModel.add(netText.getText().toString());
         scoutModel.add(itemSelected[0]);
-        scoutModel.add(commentBox.getText().toString());
+        scoutModel.add(commentBox.getText().toString().replaceAll("[^A-Za-z0-9 ]",""));
 
         scoutNameBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
         scoutedTeamBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
