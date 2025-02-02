@@ -319,18 +319,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void compileQRData(String dataString){
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
-        String[] dataList = new String[4];
-
         maxDataID++;
 
         try {
-            dataList = dataString.split(",");
-
             ArrayList<String> scoutModel = new ArrayList<>();
 
-            Collections.addAll(scoutModel, dataList);
+            scoutModel.add(String.valueOf(maxDataID));
+            Collections.addAll(scoutModel, dataString.split(","));
 
             dataBaseHelper.addOne(scoutModel);
+
             createMatch(maxDataID);
             refreshMatchTitle(maxDataID);
 
@@ -338,7 +336,6 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             Toast.makeText(MainActivity.this, "Error while compiling data.", Toast.LENGTH_SHORT).show();
-            throw new RuntimeException(e);
         }
     }
 }

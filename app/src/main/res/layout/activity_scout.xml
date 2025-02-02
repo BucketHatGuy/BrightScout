@@ -19,13 +19,14 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="500dp"
-        android:layout_height="200dp"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
         android:layout_marginTop="20dp"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:srcCompat="@drawable/frc_field2024" />
+        app:srcCompat="@drawable/frc_field2025" />
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -177,19 +178,26 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="400dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/autoCoralScoredText"
-                        android:layout_width="wrap_content"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Coral Scored" />
 
                 </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="500dp"
+                    android:layout_height="200dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/reef" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -387,7 +395,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="400dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:orientation="vertical">
@@ -400,6 +408,13 @@
                         android:text="Coral Scored" />
 
                 </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/imageView6"
+                    android:layout_width="500dp"
+                    android:layout_height="200dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/reef" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -588,30 +603,69 @@
                 android:background="#DEDEDE"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/teleopAlgaeRemovalText"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="400dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Algae Removed" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/teleopAlgaeRemovalText"
+                        android:layout_width="400dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="Algae Removed" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/imageView7"
+                    android:layout_width="500dp"
+                    android:layout_height="150dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/algae" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
-                    <CheckBox
-                        android:id="@+id/topAlgaeCheckbox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Top Algae" />
+                    <LinearLayout
+                        android:layout_width="200dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"></LinearLayout>
 
-                    <CheckBox
-                        android:id="@+id/bottomAlgaeCheckbox"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Bottom Algae" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="25dp"
+                            android:orientation="vertical"></LinearLayout>
+
+                        <CheckBox
+                            android:id="@+id/topAlgaeCheckbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="High Algae" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp"
+                            android:orientation="horizontal">
+
+                        </LinearLayout>
+
+                        <CheckBox
+                            android:id="@+id/bottomAlgaeCheckbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Low Algae" />
+                    </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
@@ -624,40 +678,60 @@
 
                 <TextView
                     android:id="@+id/teleopProcessorText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="400dp"
+                    android:layout_height="100dp"
                     android:layout_weight="1"
                     android:text="Processor" />
 
+                <ImageView
+                    android:id="@+id/imageView11"
+                    android:layout_width="525dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/processor" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <Button
-                        android:id="@+id/processorAddButton"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"></LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:onClick="addAndMinusButtonHandler"
-                        android:text="+" />
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/processorText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="0"
-                        android:textAlignment="center" />
+                        <Button
+                            android:id="@+id/processorAddButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:onClick="addAndMinusButtonHandler"
+                            android:text="+" />
 
-                    <Button
-                        android:id="@+id/processorMinusButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:onClick="addAndMinusButtonHandler"
-                        android:text="-" />
+                        <TextView
+                            android:id="@+id/processorText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="0"
+                            android:textAlignment="center" />
+
+                        <Button
+                            android:id="@+id/processorMinusButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:onClick="addAndMinusButtonHandler"
+                            android:text="-" />
+                    </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
@@ -671,40 +745,60 @@
 
                 <TextView
                     android:id="@+id/teleopNetText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="350dp"
+                    android:layout_height="100dp"
                     android:layout_weight="1"
                     android:text="Net" />
 
+                <ImageView
+                    android:id="@+id/imageView10"
+                    android:layout_width="550dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/net" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <Button
-                        android:id="@+id/netAddButton"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="8dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"></LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:onClick="addAndMinusButtonHandler"
-                        android:text="+" />
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/netText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="0"
-                        android:textAlignment="center" />
+                        <Button
+                            android:id="@+id/netAddButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:onClick="addAndMinusButtonHandler"
+                            android:text="+" />
 
-                    <Button
-                        android:id="@+id/netMinusButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:onClick="addAndMinusButtonHandler"
-                        android:text="-" />
+                        <TextView
+                            android:id="@+id/netText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="0"
+                            android:textAlignment="center" />
+
+                        <Button
+                            android:id="@+id/netMinusButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:onClick="addAndMinusButtonHandler"
+                            android:text="-" />
+                    </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>

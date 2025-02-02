@@ -235,6 +235,7 @@ public class ScoutActivity extends AppCompatActivity {
         dataBaseHelper.addOne(scoutModel);
         Toast.makeText(this, "Compiled Successfully!", Toast.LENGTH_LONG).show();
 
+        scoutModel.remove(0);
         generateQRCode(makeCSVString(scoutModel));
     }
 

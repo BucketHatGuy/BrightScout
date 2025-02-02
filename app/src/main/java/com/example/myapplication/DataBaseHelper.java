@@ -90,11 +90,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         try{
             SQLiteDatabase db = this.getReadableDatabase();
             cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE", null);
+            return cursor.getColumnCount() != 0;
         } catch(Exception e) {
             return false;
         }
-
-        return cursor.moveToFirst();
     }
 
     public void createTable(){
