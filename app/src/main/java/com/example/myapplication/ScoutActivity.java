@@ -50,7 +50,6 @@ public class ScoutActivity extends AppCompatActivity {
     String[] item = {"Shallow Climb", "Deep Climb", "Park", "Kept Scoring Coral", "Kept Scoring Algae"};
     AutoCompleteTextView endgameDropdown;
     ArrayAdapter<String> adapterItem;
-    boolean isItemSelected = false;
     final String[] itemSelected = new String[1];
 
     @Override
@@ -108,7 +107,7 @@ public class ScoutActivity extends AppCompatActivity {
         topAlgaeCheckbox = findViewById(R.id.topAlgaeCheckbox);
         bottomAlgaeCheckbox = findViewById(R.id.bottomAlgaeCheckbox);
 
-        endgameDropdownPreview = findViewById(R.id.endgameDropdownPreview);
+        endgameDropdown = findViewById(R.id.endgameDropDown);
 
         insertSavedData();
 
@@ -139,7 +138,6 @@ public class ScoutActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 itemSelected[0] = parent.getItemAtPosition(position).toString();
-                isItemSelected = true;
             }
         });
     }
@@ -150,7 +148,13 @@ public class ScoutActivity extends AppCompatActivity {
         boolean isQualsMatchBoxEmpty = qualsMatchBox.getText().toString().isEmpty();
         boolean isRobotPositionBoxEmpty = robotPositionBox.getText().toString().isEmpty();
         boolean isCommentBoxEmpty = commentBox.getText().toString().isEmpty();
-        boolean isEndgameDropdownEmpty = !isItemSelected;
+        boolean isEndgameDropdownEmpty = false;
+
+        try{
+            isEndgameDropdownEmpty = (itemSelected[0] == null) || (itemSelected[0].isEmpty());
+        }catch(Exception e){
+            Log.d("Error", e.getMessage());
+        }
 
         try {
             if(isScoutNameBoxEmpty || isScoutedTeamBoxEmpty || isQualsMatchBoxEmpty || isRobotPositionBoxEmpty || isCommentBoxEmpty || isEndgameDropdownEmpty){
@@ -183,13 +187,6 @@ public class ScoutActivity extends AppCompatActivity {
                 } else {
                     commentBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
                 }
-
-                if(isEndgameDropdownEmpty){
-                    endgameDropdownPreview.setHintTextColor(ColorStateList.valueOf(Color.RED));
-                }  else {
-                    endgameDropdownPreview.setHintTextColor(ColorStateList.valueOf(Color.BLACK));
-                }
-
                 Toast.makeText(ScoutActivity.this, "Blank Box Error (did you forget something?)", Toast.LENGTH_SHORT).show();
                 return false;
             } else {
@@ -250,7 +247,25 @@ public class ScoutActivity extends AppCompatActivity {
             scoutedTeamBox.setText(String.valueOf(scoutModel.get(2)));
             qualsMatchBox.setText(String.valueOf(scoutModel.get(3)));
             robotPositionBox.setText(scoutModel.get(4));
+            moveCheckbox.setChecked(scoutModel.get(5).equals("Yes"));
+            autoL1Text.setText(scoutModel.get(6));
+            autoL2Text.setText(scoutModel.get(7));
+            autoL3Text.setText(scoutModel.get(8));
+            autoL4Text.setText(scoutModel.get(9));
+            autoCoralDroppedText.setText(scoutModel.get(10));
+            teleopL1Text.setText(scoutModel.get(11));
+            teleopL2Text.setText(scoutModel.get(12));
+            teleopL3Text.setText(scoutModel.get(13));
+            teleopL4Text.setText(scoutModel.get(14));
+            teleopCoralDroppedText.setText(scoutModel.get(15));
+            topAlgaeCheckbox.setChecked(scoutModel.get(16).equals("Yes"));
+            bottomAlgaeCheckbox.setChecked(scoutModel.get(17).equals("Yes"));
+            processorText.setText(scoutModel.get(18));
+            netText.setText(scoutModel.get(19));
+            endgameDropdown.setText(scoutModel.get(20), true);
+            commentBox.setText(String.valueOf(scoutModel.get(21)));
         } catch (Exception e){
+            Log.d("Error", e.getMessage());
             Toast.makeText(this, "No data to insert, leaving default", Toast.LENGTH_SHORT).show();
         }
 

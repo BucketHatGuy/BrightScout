@@ -41,20 +41,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         try{
             SQLiteDatabase db = this.getReadableDatabase();
             Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE WHERE DATA_ID=" + dataID, null);
-
             int columnCount = cursor.getColumnCount();
 
-            while (cursor.moveToNext()) {
-                for (int i = 1; i <= columnCount; i++) {
+            if(cursor.moveToFirst()) {
+                for (int i = 0; i <= columnCount; i++) {
                     scoutingDataArray.add(cursor.getString(i));
-                    if (i < columnCount) {
-                        scoutingDataArray.add(",");
-                    }
                 }
-                scoutingDataArray.add("\n");
             }
+
+            cursor.close();
+
         } catch(Exception exception){
-            return null;
+            Log.d("Error", exception.getStackTrace().toString());
         }
 
         return scoutingDataArray;
@@ -66,11 +64,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         ArrayList<ArrayList<String>> dataTable = new ArrayList<>();
 
         int columnCount = cursor.getColumnCount();
+        Log.d("ColumnCount", String.valueOf(cursor.getColumnCount()));
 
         while (cursor.moveToNext()){
             ArrayList<String> scoutModel = new ArrayList<>();
 
-            for (int i = 1; i <= columnCount; i++) {
+            for (int i = 0; i < columnCount; i++) {
                 scoutModel.add(cursor.getString(i));
             }
 
@@ -162,7 +161,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             db.delete("SCOUTING_TABLE","DATA_ID=" + scoutModel.get(0), null);
         }
 
-        db.insert("SCOUTING_TABLE", null, cv);
+        long result = db.insert("SCOUTING_TABLE", null, cv);
+
+        if (result == -1) {
+            Log.e("Database Error", "Failed to insert data into SCOUTING_TABLE");
+        } else {
+            Log.i("Database Success", "Data inserted successfully into SCOUTING_TABLE");
+        }
     }
 
     public void removeOne(int dataID){

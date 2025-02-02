@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 createMatch(maxDataID);
             }
         });
-        // syncAllData();
+        syncAllData();
     }
 
     @Override
@@ -235,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 generateDefaultHomeScreen();
             } else {
                 for (ArrayList<String> scoutModel : scoutingDataList) {
+                    Log.d("ID NUMBER", scoutModel.get(0));
                     createMatch(Integer.parseInt(scoutModel.get(0)));
                     refreshMatchTitle(Integer.parseInt(scoutModel.get(0)));
 
@@ -290,11 +291,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String makeCSVString(){
+        Log.d("hi", "hi");
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
         ArrayList<ArrayList<String>> scoutingDataList = dataBaseHelper.getTable();
         StringBuilder csvString = new StringBuilder();
         int columnTotal = 0;
         int columnNumber = 0;
+
+        Log.d("what", "what");
 
         for (ArrayList<String> scoutModel : scoutingDataList) {
             columnTotal = scoutModel.size();

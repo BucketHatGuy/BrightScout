@@ -736,8 +736,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:hint="Select Item"
-                    android:textColorHint="#E21D1D">
+                    android:hint="Select Item">
 
                     <AutoCompleteTextView
                         android:id="@+id/endgameDropDown"
