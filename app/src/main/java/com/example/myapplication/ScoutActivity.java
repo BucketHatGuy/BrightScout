@@ -373,5 +373,9 @@ public class ScoutActivity extends AppCompatActivity {
             Toast.makeText(this, "An error has occurred pressing this button", Toast.LENGTH_LONG).show();
         }
 
+        // the robot should have moved if they were able to place coral, so we set it as moved if the scouter tries to add data saying they moved coral
+        if(buttonName.contains("Add") && buttonName.contains("auto") && !moveCheckbox.isChecked()){
+            moveCheckbox.setChecked(true);
+        }
     }
 }
