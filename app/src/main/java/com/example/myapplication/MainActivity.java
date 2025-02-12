@@ -140,16 +140,16 @@ public class MainActivity extends AppCompatActivity {
                 (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
         LinearLayout.LayoutParams textLayoutParams = new LinearLayout.LayoutParams
-                (300, 100);
+                (400, 150);
 
         LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams
-                (300, 50);
+                (400, 75);
 
         LinearLayout.LayoutParams trashParams = new LinearLayout.LayoutParams
-                (100, 100);
+                (175, 175);
 
         LinearLayout.LayoutParams spacingLineParams = new LinearLayout.LayoutParams
-                (LinearLayout.LayoutParams.MATCH_PARENT, 40);
+                (LinearLayout.LayoutParams.MATCH_PARENT, 60);
 
         LinearLayout.LayoutParams invisibleParams = new LinearLayout.LayoutParams
                 (1, 1);
@@ -181,17 +181,20 @@ public class MainActivity extends AppCompatActivity {
         qualText.setText("Quals ??");
         qualText.setTypeface(null, Typeface.BOLD);
         qualText.setId(1000 + dataID);
+        qualText.setTextSize(25);
 
         // set up team text
         TextView teamText = new TextView(this);
         teamText.setText("Team ????");
         teamText.setId(View.generateViewId());
         teamText.setId(2000 + dataID);
+        teamText.setTextSize(25);
 
         //set up spacer
         TextView spacingLine = new TextView(this);
         spacingLine.setGravity(Gravity.CENTER);
-        spacingLine.setText("-------------------------------------------------------------");
+        spacingLine.setText("----------------------------------------------------");
+        spacingLine.setTextSize(25);
 
         //set up trash button
         ImageButton trashButton = new ImageButton(this);
@@ -322,6 +325,7 @@ public class MainActivity extends AppCompatActivity {
             for(String column : columnNamesArray){
                 resultsArray = dataBaseHelper.getTableSpecific(column, "SCOUTED_TEAM = \"" + teamNumber + "\"");
                 Log.d("size", String.valueOf(resultsArray.size()));
+                Log.d("Cycles", "We have cycled through the loop!");
 
                 if(column.equals("AUTO_MOVE") || column.equals("ALGAE_REMOVAL_TOP") || column.equals("ALGAE_REMOVAL_BOTTOM")){
                     int totalYesAnswers = 0;
@@ -333,8 +337,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    if(totalYesAnswers != 0){
-                        teamAverageArray.add("Yes (" + (totalYesAnswers/totalAnswers)*100.00 + "%)");
+                    Log.d("division", String.valueOf(Math.round((double) totalYesAnswers/totalAnswers * 100.0)));
+
+                    if(totalYesAnswers != 0.0){
+                        teamAverageArray.add("Yes (" + Math.round((double) totalYesAnswers/totalAnswers * 100.0) + "%)");
                     } else {
                         teamAverageArray.add("No (0%)");
                     }
@@ -350,15 +356,22 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    teamAverageArray.add(mostCommonAnswer + " (" + (maxCount/resultsArray.size())*100 + "%)");
+                    teamAverageArray.add(mostCommonAnswer + " (" + Math.round((double) maxCount/resultsArray.size() * 100.0) + "%)");
+//                    teamAverageArray.add(mostCommonAnswer + " (" + (maxCount/resultsArray.size())*100 + "%)");
+                } else if (column.equals("SCOUTED_TEAM")){
+                    teamAverageArray.add(teamNumber);
                 } else {
                     int total = 0;
+                    double result = 0.0;
 
                     for(String number : resultsArray){
                         total += Integer.parseInt(number);
                     }
 
-                    teamAverageArray.add(String.valueOf(total/resultsArray.size()));
+                    result = Math.round((double) total/resultsArray.size() * 100.0) / 100.0;
+
+                    teamAverageArray.add(String.valueOf(result));
+                    Log.d("result", String.valueOf(result));
                 }
             }
 

@@ -38,7 +38,7 @@ import java.util.ArrayList;
 public class ScoutActivity extends AppCompatActivity {
 
     Button compileButton;
-    EditText scoutNameBox, scoutedTeamBox, qualsMatchBox, robotPositionBox, commentBox;
+    EditText scoutNameBox, scoutedTeamBox, qualsMatchBox, commentBox;
     TextView autoL1Text, autoL2Text, autoL3Text, autoL4Text, autoCoralDroppedText, teleopL1Text, teleopL2Text, teleopL3Text, teleopL4Text,
             teleopCoralDroppedText, processorText, netText;
     TextInputLayout endgameDropdownPreview;
@@ -47,10 +47,14 @@ public class ScoutActivity extends AppCompatActivity {
     Dialog dialog;
     Button dialogButton;
 
-    String[] item = {"Shallow Climb", "Deep Climb", "Park", "Kept Scoring Coral", "Kept Scoring Algae"};
-    AutoCompleteTextView endgameDropdown;
+    String[] endgameItems = {"Shallow Climb", "Deep Climb", "Park", "Kept Scoring Coral", "Kept Scoring Algae", "Nothing"};
+    String[] allianceItems = {"Red", "Blue"};
+    String[] positionItems = {"1", "2", "3"};
+    AutoCompleteTextView allianceDropdown, positionDropdown, endgameDropdown;
     ArrayAdapter<String> adapterItem;
-    final String[] itemSelected = new String[1];
+    final String[] allianceItemSelected = new String[1];
+    final String[] positionItemSelected = new String[1];
+    final String[] endgameItemSelected = new String[1];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +91,6 @@ public class ScoutActivity extends AppCompatActivity {
         scoutNameBox = findViewById(R.id.scoutNameBoxView);
         scoutedTeamBox = findViewById(R.id.scoutedTeamBoxView);
         qualsMatchBox = findViewById(R.id.qualsMatchBoxView);
-        robotPositionBox = findViewById(R.id.robotPositionBoxView);
         commentBox = findViewById(R.id.commentsTextBox);
 
         autoL1Text = findViewById(R.id.autoL1Text);
@@ -107,6 +110,8 @@ public class ScoutActivity extends AppCompatActivity {
         topAlgaeCheckbox = findViewById(R.id.topAlgaeCheckbox);
         bottomAlgaeCheckbox = findViewById(R.id.bottomAlgaeCheckbox);
 
+        allianceDropdown = findViewById(R.id.allianceDropDown);
+        positionDropdown = findViewById(R.id.positionDropDown);
         endgameDropdown = findViewById(R.id.endgameDropDown);
 
         insertSavedData();
@@ -122,20 +127,44 @@ public class ScoutActivity extends AppCompatActivity {
                 try{
                     mainActivity.refreshMatchTitle(MainActivity.currentDataID);
                 }catch(Exception e){
-                    Log.d("Error", e.getStackTrace().toString());
+                    Log.d("Error", e.getMessage());
                 }
             }
         });
 
-        endgameDropdown = findViewById(R.id.endgameDropDown);
-        adapterItem = new ArrayAdapter<String>(this, R.layout.list_item, item);
+        // setting up allianceDropdown
+        adapterItem = new ArrayAdapter<String>(this, R.layout.list_item, allianceItems);
+
+        allianceDropdown.setAdapter(adapterItem);
+
+        allianceDropdown.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                allianceItemSelected[0] = parent.getItemAtPosition(position).toString();
+            }
+        });
+
+        // setting up positionDropdown
+        adapterItem = new ArrayAdapter<String>(this, R.layout.list_item, positionItems);
+
+        positionDropdown.setAdapter(adapterItem);
+
+        positionDropdown.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                positionItemSelected[0] = parent.getItemAtPosition(position).toString();
+            }
+        });
+
+        // setting up endgameDropdown
+        adapterItem = new ArrayAdapter<String>(this, R.layout.list_item, endgameItems);
 
         endgameDropdown.setAdapter(adapterItem);
 
         endgameDropdown.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                itemSelected[0] = parent.getItemAtPosition(position).toString();
+                endgameItemSelected[0] = parent.getItemAtPosition(position).toString();
             }
         });
     }
@@ -144,18 +173,31 @@ public class ScoutActivity extends AppCompatActivity {
         boolean isScoutNameBoxEmpty = scoutNameBox.getText().toString().isEmpty();
         boolean isScoutedTeamBoxEmpty = scoutedTeamBox.getText().toString().isEmpty();
         boolean isQualsMatchBoxEmpty = qualsMatchBox.getText().toString().isEmpty();
-        boolean isRobotPositionBoxEmpty = robotPositionBox.getText().toString().isEmpty();
         boolean isCommentBoxEmpty = commentBox.getText().toString().isEmpty();
+        boolean isAllianceDropdownEmpty = false;
+        boolean isPositionDropdownEmpty = false;
         boolean isEndgameDropdownEmpty = false;
 
         try{
-            isEndgameDropdownEmpty = (itemSelected[0] == null) || (itemSelected[0].isEmpty());
-        }catch(Exception e){
+            isAllianceDropdownEmpty = (allianceItemSelected[0] == null) || (endgameItemSelected[0].isEmpty());
+        } catch(Exception e){
+            Log.d("Error", e.getMessage());
+        }
+
+        try{
+            isPositionDropdownEmpty = (endgameItemSelected[0] == null) || (endgameItemSelected[0].isEmpty());
+        } catch(Exception e){
+            Log.d("Error", e.getMessage());
+        }
+
+        try{
+            isEndgameDropdownEmpty = (endgameItemSelected[0] == null) || (endgameItemSelected[0].isEmpty());
+        } catch(Exception e){
             Log.d("Error", e.getMessage());
         }
 
         try {
-            if(isScoutNameBoxEmpty || isScoutedTeamBoxEmpty || isQualsMatchBoxEmpty || isRobotPositionBoxEmpty || isCommentBoxEmpty || isEndgameDropdownEmpty){
+            if(isScoutNameBoxEmpty || isScoutedTeamBoxEmpty || isQualsMatchBoxEmpty || isAllianceDropdownEmpty || isPositionDropdownEmpty || isEndgameDropdownEmpty || isCommentBoxEmpty){
                 if(isScoutNameBoxEmpty){
                     scoutNameBox.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
                 } else {
@@ -172,12 +214,6 @@ public class ScoutActivity extends AppCompatActivity {
                     qualsMatchBox.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
                 } else {
                     qualsMatchBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-                }
-
-                if(isRobotPositionBoxEmpty){
-                    robotPositionBox.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-                } else {
-                    robotPositionBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
                 }
 
                 if(isCommentBoxEmpty){
@@ -204,7 +240,7 @@ public class ScoutActivity extends AppCompatActivity {
         scoutModel.add(scoutNameBox.getText().toString().replaceAll("[^A-Za-z0-9 ]",""));
         scoutModel.add(scoutedTeamBox.getText().toString());
         scoutModel.add(qualsMatchBox.getText().toString());
-        scoutModel.add(robotPositionBox.getText().toString().replaceAll("[^A-Za-z0-9 ]",""));
+        scoutModel.add(allianceItemSelected[0] + " " + positionItemSelected[0]);
         scoutModel.add(moveCheckbox.isChecked() ? "Yes" : "No");
         scoutModel.add(autoL1Text.getText().toString());
         scoutModel.add(autoL2Text.getText().toString());
@@ -220,13 +256,12 @@ public class ScoutActivity extends AppCompatActivity {
         scoutModel.add(bottomAlgaeCheckbox.isChecked() ? "Yes" : "No");
         scoutModel.add(processorText.getText().toString());
         scoutModel.add(netText.getText().toString());
-        scoutModel.add(itemSelected[0]);
+        scoutModel.add(endgameItemSelected[0]);
         scoutModel.add(commentBox.getText().toString().replaceAll("[^A-Za-z0-9 ]",""));
 
         scoutNameBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
         scoutedTeamBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
         qualsMatchBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-        robotPositionBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
         commentBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
 
         DataBaseHelper dataBaseHelper = new DataBaseHelper(ScoutActivity.this);
@@ -242,10 +277,12 @@ public class ScoutActivity extends AppCompatActivity {
         ArrayList<String> scoutModel = dataBaseHelper.getScoutingData(MainActivity.currentDataID);
 
         try{
+            String[] robotPositionArray = scoutModel.get(4).split(" ");
+
             scoutNameBox.setText(scoutModel.get(1));
             scoutedTeamBox.setText(String.valueOf(scoutModel.get(2)));
             qualsMatchBox.setText(String.valueOf(scoutModel.get(3)));
-            robotPositionBox.setText(scoutModel.get(4));
+            allianceDropdown.setText(robotPositionArray[0]); positionDropdown.setText(robotPositionArray[1]);
             moveCheckbox.setChecked(scoutModel.get(5).equals("Yes"));
             autoL1Text.setText(scoutModel.get(6));
             autoL2Text.setText(scoutModel.get(7));
@@ -263,6 +300,7 @@ public class ScoutActivity extends AppCompatActivity {
             netText.setText(scoutModel.get(19));
             endgameDropdown.setText(scoutModel.get(20), true);
             commentBox.setText(String.valueOf(scoutModel.get(21)));
+
         } catch (Exception e){
             Log.d("Error", e.getMessage());
             Toast.makeText(this, "No data to insert, leaving default", Toast.LENGTH_SHORT).show();
@@ -304,7 +342,7 @@ public class ScoutActivity extends AppCompatActivity {
         return csvString.toString();
     }
 
-    public void addAndMinusButtonHandler(View view){
+    public void addAndMinusHandler(View view){
         String buttonName = getResources().getResourceEntryName(view.getId());
         String buttonNameFiltered = "";
         TextView textView;
@@ -332,7 +370,7 @@ public class ScoutActivity extends AppCompatActivity {
             textView.setText(String.valueOf(number + 1));
 
         } else {
-            Toast.makeText(this, "An error has occured pressing this button", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "An error has occurred pressing this button", Toast.LENGTH_LONG).show();
         }
 
     }
