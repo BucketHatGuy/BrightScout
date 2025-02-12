@@ -332,18 +332,16 @@ public class MainActivity extends AppCompatActivity {
                     int totalAnswers = resultsArray.size();
 
                     for(String yesOrNo : resultsArray){
-                        if(yesOrNo.equals("Yes")){
+                        if(yesOrNo.equals("1")){
                             totalYesAnswers++;
                         }
                     }
 
+                    Log.d("yesAnswers", String.valueOf(totalYesAnswers));
+                    Log.d("allAnswers", String.valueOf(totalAnswers));
                     Log.d("division", String.valueOf(Math.round((double) totalYesAnswers/totalAnswers * 100.0)));
 
-                    if(totalYesAnswers != 0.0){
-                        teamAverageArray.add("Yes (" + Math.round((double) totalYesAnswers/totalAnswers * 100.0) + "%)");
-                    } else {
-                        teamAverageArray.add("No (0%)");
-                    }
+                    teamAverageArray.add(Math.round((double) totalYesAnswers/totalAnswers * 100.0) + "%");
                 } else if(column.equals("END_GAME")){
                     String mostCommonAnswer = null;
                     int maxCount = -1;

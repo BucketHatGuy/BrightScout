@@ -241,7 +241,7 @@ public class ScoutActivity extends AppCompatActivity {
         scoutModel.add(scoutedTeamBox.getText().toString());
         scoutModel.add(qualsMatchBox.getText().toString());
         scoutModel.add(allianceItemSelected[0] + " " + positionItemSelected[0]);
-        scoutModel.add(moveCheckbox.isChecked() ? "Yes" : "No");
+        scoutModel.add(moveCheckbox.isChecked() ? "1" : "0");
         scoutModel.add(autoL1Text.getText().toString());
         scoutModel.add(autoL2Text.getText().toString());
         scoutModel.add(autoL3Text.getText().toString());
@@ -252,8 +252,8 @@ public class ScoutActivity extends AppCompatActivity {
         scoutModel.add(teleopL3Text.getText().toString());
         scoutModel.add(teleopL4Text.getText().toString());
         scoutModel.add(teleopCoralDroppedText.getText().toString());
-        scoutModel.add(topAlgaeCheckbox.isChecked() ? "Yes" : "No");
-        scoutModel.add(bottomAlgaeCheckbox.isChecked() ? "Yes" : "No");
+        scoutModel.add(topAlgaeCheckbox.isChecked() ? "1" : "0");
+        scoutModel.add(bottomAlgaeCheckbox.isChecked() ? "1" : "0");
         scoutModel.add(processorText.getText().toString());
         scoutModel.add(netText.getText().toString());
         scoutModel.add(endgameItemSelected[0]);
@@ -283,7 +283,7 @@ public class ScoutActivity extends AppCompatActivity {
             scoutedTeamBox.setText(String.valueOf(scoutModel.get(2)));
             qualsMatchBox.setText(String.valueOf(scoutModel.get(3)));
             allianceDropdown.setText(robotPositionArray[0]); positionDropdown.setText(robotPositionArray[1]);
-            moveCheckbox.setChecked(scoutModel.get(5).equals("Yes"));
+            moveCheckbox.setChecked(scoutModel.get(5).equals("1"));
             autoL1Text.setText(scoutModel.get(6));
             autoL2Text.setText(scoutModel.get(7));
             autoL3Text.setText(scoutModel.get(8));
@@ -294,8 +294,8 @@ public class ScoutActivity extends AppCompatActivity {
             teleopL3Text.setText(scoutModel.get(13));
             teleopL4Text.setText(scoutModel.get(14));
             teleopCoralDroppedText.setText(scoutModel.get(15));
-            topAlgaeCheckbox.setChecked(scoutModel.get(16).equals("Yes"));
-            bottomAlgaeCheckbox.setChecked(scoutModel.get(17).equals("Yes"));
+            topAlgaeCheckbox.setChecked(scoutModel.get(16).equals("1"));
+            bottomAlgaeCheckbox.setChecked(scoutModel.get(17).equals("1"));
             processorText.setText(scoutModel.get(18));
             netText.setText(scoutModel.get(19));
             endgameDropdown.setText(scoutModel.get(20), true);
