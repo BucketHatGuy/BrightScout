@@ -6,6 +6,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -312,7 +314,21 @@ public class ScoutActivity extends AppCompatActivity {
         BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
         try {
             Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 1000, 1000);
-            imageView3.setImageBitmap(bitmap);
+            Bitmap rawLogoBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.qrcode_image);
+            int newDimension = 152;
+            Bitmap adjustedLogoBitmap = Bitmap.createScaledBitmap(rawLogoBitmap, newDimension, newDimension, false);
+
+            Bitmap combinedBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
+
+            Canvas canvas = new Canvas(combinedBitmap);
+            canvas.drawBitmap(bitmap, 0, 0, null);
+
+            int centerX = (bitmap.getWidth() - adjustedLogoBitmap.getWidth()) / 2;
+            int centerY = (bitmap.getHeight() - adjustedLogoBitmap.getHeight()) / 2;
+
+            canvas.drawBitmap(adjustedLogoBitmap, centerX, centerY, null);
+
+            imageView3.setImageBitmap(combinedBitmap);
         }
         catch (WriterException e) {
             Log.d("Error", "Something went wrong at generateQRCode()");
