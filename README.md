@@ -18,8 +18,7 @@ right to the point, this app works to take all of the frusturating parts of scou
 
 BrightScout is optimized for Android Tablets using portrait mode, as that is what Team 5801 uses in order to gather all of its data. There is no
 internet required, as data is compiled locally onto the tablet and QR codes allow for data to be transferred through devices wirelessly without
-having to interfere with wireless communication with robots on the competition field. Simply download the app by pulling the code through Git,
-checkout the "final_tweak_testing" branch, and watch as BrightScout makes scouting a simple and intuitive task that lets everyone get an advantage
+having to interfere with wireless communication with robots on the competition field. Simply download the app by downloading the apk in the release tab, and watch as BrightScout makes scouting a simple and intuitive task that lets everyone get an advantage
 during the competition season.
 
 *The Logo*
