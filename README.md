@@ -21,3 +21,7 @@ internet required, as data is compiled locally onto the tablet and QR codes allo
 having to interfere with wireless communication with robots on the competition field. Simply download the app by pulling the code through Git,
 checkout the "final_tweak_testing" branch, and watch as BrightScout makes scouting a simple and intuitive task that lets everyone get an advantage
 during the competition season.
+
+*The Logo*
+
+![Untitled design png](https://github.com/user-attachments/assets/694704c5-bdf6-4b34-9915-9905f0e4f567)
