@@ -15,7 +15,8 @@
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="#FAFAFA" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -125,19 +126,44 @@
 
                 <TextView
                     android:id="@+id/robotPositionTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Position" />
 
-                <EditText
-                    android:id="@+id/robotPositionBoxView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/allianceDropdownPreview"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"
                     android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="Red 1"
-                    android:inputType="text" />
+                    android:hint="Select Item">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/allianceDropDown"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/positionDropdownPreview"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"
+                    android:layout_weight="1"
+                    android:hint="Select Item">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/positionDropDown"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
 
@@ -212,12 +238,13 @@
                         android:orientation="horizontal">
 
                         <Button
-                            android:id="@+id/autoL4AddButton"
+                            android:id="@+id/autoL4MinusButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="+" />
+                            android:backgroundTint="#F660F6"
+                            android:onClick="addAndMinusHandler"
+                            android:text="-" />
 
                         <TextView
                             android:id="@+id/autoL4Text"
@@ -228,12 +255,13 @@
                             android:textAlignment="center" />
 
                         <Button
-                            android:id="@+id/autoL4MinusButton"
+                            android:id="@+id/autoL4AddButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="-" />
+                            android:backgroundTint="#F660F6"
+                            android:onClick="addAndMinusHandler"
+                            android:text="+" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -243,12 +271,13 @@
                         android:orientation="horizontal">
 
                         <Button
-                            android:id="@+id/autoL3AddButton"
+                            android:id="@+id/autoL3MinusButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="+" />
+                            android:backgroundTint="#CE50CE"
+                            android:onClick="addAndMinusHandler"
+                            android:text="-" />
 
                         <TextView
                             android:id="@+id/autoL3Text"
@@ -259,12 +288,13 @@
                             android:textAlignment="center" />
 
                         <Button
-                            android:id="@+id/autoL3MinusButton"
+                            android:id="@+id/autoL3AddButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="-" />
+                            android:backgroundTint="#CE50CE"
+                            android:onClick="addAndMinusHandler"
+                            android:text="+" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -274,12 +304,13 @@
                         android:orientation="horizontal">
 
                         <Button
-                            android:id="@+id/autoL2AddButton"
+                            android:id="@+id/autoL2MinusButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="+" />
+                            android:backgroundTint="#AD43AD"
+                            android:onClick="addAndMinusHandler"
+                            android:text="-" />
 
                         <TextView
                             android:id="@+id/autoL2Text"
@@ -290,12 +321,13 @@
                             android:textAlignment="center" />
 
                         <Button
-                            android:id="@+id/autoL2MinusButton"
+                            android:id="@+id/autoL2AddButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="-" />
+                            android:backgroundTint="#AD43AD"
+                            android:onClick="addAndMinusHandler"
+                            android:text="+" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -305,12 +337,13 @@
                         android:orientation="horizontal">
 
                         <Button
-                            android:id="@+id/autoL1AddButton"
+                            android:id="@+id/autoL1MinusButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="+" />
+                            android:backgroundTint="#AFAFAF"
+                            android:onClick="addAndMinusHandler"
+                            android:text="-" />
 
                         <TextView
                             android:id="@+id/autoL1Text"
@@ -321,12 +354,13 @@
                             android:textAlignment="center" />
 
                         <Button
-                            android:id="@+id/autoL1MinusButton"
+                            android:id="@+id/autoL1AddButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="-" />
+                            android:backgroundTint="#AFAFAF"
+                            android:onClick="addAndMinusHandler"
+                            android:text="+" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -353,12 +387,14 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/autoCoralDroppedAddButton"
+                        android:id="@+id/autoCoralDroppedMinusButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:onClick="addAndMinusButtonHandler"
-                        android:text="+" />
+                        android:backgroundTint="#CE3E3E"
+                        android:onClick="addAndMinusHandler"
+                        android:text="-"
+                        android:textColorLink="#673AB7" />
 
                     <TextView
                         android:id="@+id/autoCoralDroppedText"
@@ -369,12 +405,13 @@
                         android:textAlignment="center" />
 
                     <Button
-                        android:id="@+id/autoCoralDroppedMinusButton"
+                        android:id="@+id/autoCoralDroppedAddButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:onClick="addAndMinusButtonHandler"
-                        android:text="-" />
+                        android:backgroundTint="#CE3E3E"
+                        android:onClick="addAndMinusHandler"
+                        android:text="+" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -429,12 +466,13 @@
                         android:orientation="horizontal">
 
                         <Button
-                            android:id="@+id/teleopL4AddButton"
+                            android:id="@+id/teleopL4MinusButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="+" />
+                            android:backgroundTint="#F660F6"
+                            android:onClick="addAndMinusHandler"
+                            android:text="-" />
 
                         <TextView
                             android:id="@+id/teleopL4Text"
@@ -445,12 +483,13 @@
                             android:textAlignment="center" />
 
                         <Button
-                            android:id="@+id/teleopL4MinusButton"
+                            android:id="@+id/teleopL4AddButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="-" />
+                            android:backgroundTint="#F660F6"
+                            android:onClick="addAndMinusHandler"
+                            android:text="+" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -460,12 +499,13 @@
                         android:orientation="horizontal">
 
                         <Button
-                            android:id="@+id/teleopL3AddButton"
+                            android:id="@+id/teleopL3MinusButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="+" />
+                            android:backgroundTint="#CE50CE"
+                            android:onClick="addAndMinusHandler"
+                            android:text="-" />
 
                         <TextView
                             android:id="@+id/teleopL3Text"
@@ -476,12 +516,13 @@
                             android:textAlignment="center" />
 
                         <Button
-                            android:id="@+id/teleopL3MinusButton"
+                            android:id="@+id/teleopL3AddButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="-" />
+                            android:backgroundTint="#CE50CE"
+                            android:onClick="addAndMinusHandler"
+                            android:text="+" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -491,12 +532,13 @@
                         android:orientation="horizontal">
 
                         <Button
-                            android:id="@+id/teleopL2AddButton"
+                            android:id="@+id/teleopL2MinusButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="+" />
+                            android:backgroundTint="#AD43AD"
+                            android:onClick="addAndMinusHandler"
+                            android:text="-" />
 
                         <TextView
                             android:id="@+id/teleopL2Text"
@@ -507,12 +549,13 @@
                             android:textAlignment="center" />
 
                         <Button
-                            android:id="@+id/teleopL2MinusButton"
+                            android:id="@+id/teleopL2AddButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="-" />
+                            android:backgroundTint="#AD43AD"
+                            android:onClick="addAndMinusHandler"
+                            android:text="+" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -522,12 +565,13 @@
                         android:orientation="horizontal">
 
                         <Button
-                            android:id="@+id/teleopL1AddButton"
+                            android:id="@+id/teleopL1MinusButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="+" />
+                            android:backgroundTint="#AFAFAF"
+                            android:onClick="addAndMinusHandler"
+                            android:text="-" />
 
                         <TextView
                             android:id="@+id/teleopL1Text"
@@ -538,12 +582,13 @@
                             android:textAlignment="center" />
 
                         <Button
-                            android:id="@+id/teleopL1MinusButton"
+                            android:id="@+id/teleopL1AddButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="-" />
+                            android:backgroundTint="#AFAFAF"
+                            android:onClick="addAndMinusHandler"
+                            android:text="+" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -570,12 +615,13 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/teleopCoralDroppedAddButton"
+                        android:id="@+id/teleopCoralDroppedMinusButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:onClick="addAndMinusButtonHandler"
-                        android:text="+" />
+                        android:backgroundTint="#CE3E3E"
+                        android:onClick="addAndMinusHandler"
+                        android:text="-" />
 
                     <TextView
                         android:id="@+id/teleopCoralDroppedText"
@@ -586,12 +632,13 @@
                         android:textAlignment="center" />
 
                     <Button
-                        android:id="@+id/teleopCoralDroppedMinusButton"
+                        android:id="@+id/teleopCoralDroppedAddButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:onClick="addAndMinusButtonHandler"
-                        android:text="-" />
+                        android:backgroundTint="#CE3E3E"
+                        android:onClick="addAndMinusHandler"
+                        android:text="+" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -709,12 +756,13 @@
                         android:orientation="horizontal">
 
                         <Button
-                            android:id="@+id/processorAddButton"
+                            android:id="@+id/processorMinusButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="+" />
+                            android:backgroundTint="#00C7B4"
+                            android:onClick="addAndMinusHandler"
+                            android:text="-" />
 
                         <TextView
                             android:id="@+id/processorText"
@@ -725,12 +773,13 @@
                             android:textAlignment="center" />
 
                         <Button
-                            android:id="@+id/processorMinusButton"
+                            android:id="@+id/processorAddButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="-" />
+                            android:backgroundTint="#00C7B4"
+                            android:onClick="addAndMinusHandler"
+                            android:text="+" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -776,12 +825,13 @@
                         android:orientation="horizontal">
 
                         <Button
-                            android:id="@+id/netAddButton"
+                            android:id="@+id/netMinusButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="+" />
+                            android:backgroundTint="#009688"
+                            android:onClick="addAndMinusHandler"
+                            android:text="-" />
 
                         <TextView
                             android:id="@+id/netText"
@@ -792,12 +842,13 @@
                             android:textAlignment="center" />
 
                         <Button
-                            android:id="@+id/netMinusButton"
+                            android:id="@+id/netAddButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="addAndMinusButtonHandler"
-                            android:text="-" />
+                            android:backgroundTint="#009688"
+                            android:onClick="addAndMinusHandler"
+                            android:text="+" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -856,14 +907,13 @@
                     android:layout_weight="1"
                     android:text="Comments" />
 
-                <EditText
-                    android:id="@+id/commentsTextBox"
+                <Button
+                    android:id="@+id/commentButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="Slow Aligns? Defending? Broken?"
-                    android:inputType="text" />
+                    android:backgroundTint="#009CE4"
+                    android:text="Click to comment (required)" />
 
             </LinearLayout>
 

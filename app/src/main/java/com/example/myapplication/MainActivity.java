@@ -34,9 +34,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity {
-
     static MainActivity mainActivity;
 
     static int maxDataID = 0;
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 maxDataID++;
                 createMatch(maxDataID);
+                Toast.makeText(MainActivity.this, "New match made! Please scroll and click the title to begin scouting.", Toast.LENGTH_SHORT).show();
             }
         });
         syncAllData();
@@ -81,16 +83,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getTitle().equals("Export data to CSV")){
-            File file = MainActivity.this.getExternalFilesDir(null);
+            File rawFile = MainActivity.this.getExternalFilesDir(null);
+            File averagedFile = MainActivity.this.getExternalFilesDir(null);
+
             try {
-                FileWriter fileWriter = new FileWriter(file + "/BrightScoutExport.txt");
-                fileWriter.write(makeCSVString());
-                fileWriter.close();
-                Toast.makeText(this, "yay!", Toast.LENGTH_LONG).show();
+                FileWriter rawFileWriter = new FileWriter(rawFile + "/BrightScout_rawExport.txt");
+                rawFileWriter.write(makeCSVString(null));
+                rawFileWriter.close();
+
+                FileWriter avgFileWriter = new FileWriter(averagedFile + "/BrightScout_averageExport.txt");
+                avgFileWriter.write(makeCSVString(getAverages()));
+                avgFileWriter.close();
+
+                Toast.makeText(this, "Data has been saved. Search for \"BrightScout\" in your files app.", Toast.LENGTH_LONG).show();
             } catch (IOException e) {
-                Toast.makeText(this, "an error occured", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "An error occurred.", Toast.LENGTH_LONG).show();
                 throw new RuntimeException(e);
             }
+
         }
 
         if(item.getTitle().equals("Import via QR")) {
@@ -99,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
             intentIntegrator.setOrientationLocked(true);
             intentIntegrator.initiateScan();
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -124,16 +135,16 @@ public class MainActivity extends AppCompatActivity {
                 (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
         LinearLayout.LayoutParams textLayoutParams = new LinearLayout.LayoutParams
-                (300, 100);
+                (400, 150);
 
         LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams
-                (300, 50);
+                (400, 75);
 
         LinearLayout.LayoutParams trashParams = new LinearLayout.LayoutParams
-                (100, 100);
+                (175, 175);
 
         LinearLayout.LayoutParams spacingLineParams = new LinearLayout.LayoutParams
-                (LinearLayout.LayoutParams.MATCH_PARENT, 40);
+                (LinearLayout.LayoutParams.MATCH_PARENT, 60);
 
         LinearLayout.LayoutParams invisibleParams = new LinearLayout.LayoutParams
                 (1, 1);
@@ -165,17 +176,20 @@ public class MainActivity extends AppCompatActivity {
         qualText.setText("Quals ??");
         qualText.setTypeface(null, Typeface.BOLD);
         qualText.setId(1000 + dataID);
+        qualText.setTextSize(25);
 
         // set up team text
         TextView teamText = new TextView(this);
         teamText.setText("Team ????");
         teamText.setId(View.generateViewId());
         teamText.setId(2000 + dataID);
+        teamText.setTextSize(25);
 
         //set up spacer
         TextView spacingLine = new TextView(this);
         spacingLine.setGravity(Gravity.CENTER);
-        spacingLine.setText("-------------------------------------------------------------");
+        spacingLine.setText("----------------------------------------------------");
+        spacingLine.setTextSize(25);
 
         //set up trash button
         ImageButton trashButton = new ImageButton(this);
@@ -221,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void syncAllData(){
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
-        Toast.makeText(MainActivity.this, "Syncing data...", Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this, "Syncing data...", Toast.LENGTH_SHORT).show();
 
         if(dataBaseHelper.checkForTable()){
             ArrayList<ArrayList<String>> scoutingDataList = dataBaseHelper.getTable(false);
@@ -281,12 +295,93 @@ public class MainActivity extends AppCompatActivity {
         spacer.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
     }
 
-    public String makeCSVString(){
+    public ArrayList<ArrayList<String>> getAverages(){
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
-        ArrayList<ArrayList<String>> scoutingDataList = dataBaseHelper.getTable(true);
+        HashSet<String> teamNumbersSet = new HashSet<>(dataBaseHelper.getTableSpecific("SCOUTED_TEAM", null));
+        ArrayList<String> columnNamesArray = new ArrayList<>();
+        ArrayList<String> resultsArray = new ArrayList<>();
+        ArrayList<String> endgameDropdownArray = new ArrayList<>();
+
+        ArrayList<ArrayList<String>> averageTable = new ArrayList<>();
+
+        Collections.addAll(columnNamesArray, dataBaseHelper.getColumnNames());
+
+        columnNamesArray.remove("DATA_ID");
+        columnNamesArray.remove("SCOUT_NAME");
+        columnNamesArray.remove("QUALS_MATCH");
+        columnNamesArray.remove("ROBOT_POSITION");
+        columnNamesArray.remove("COMMENTS");
+
+        averageTable.add(columnNamesArray);
+
+        for(String teamNumber : teamNumbersSet){
+            ArrayList<String> teamAverageArray = new ArrayList<>();
+
+            for(String column : columnNamesArray){
+                resultsArray = dataBaseHelper.getTableSpecific(column, "SCOUTED_TEAM = \"" + teamNumber + "\"");
+                Log.d("size", String.valueOf(resultsArray.size()));
+                Log.d("Cycles", "We have cycled through the loop!");
+
+                if(column.equals("AUTO_MOVE") || column.equals("ALGAE_REMOVAL_TOP") || column.equals("ALGAE_REMOVAL_BOTTOM")){
+                    int totalYesAnswers = 0;
+                    int totalAnswers = resultsArray.size();
+
+                    for(String yesOrNo : resultsArray){
+                        if(yesOrNo.equals("1")){
+                            totalYesAnswers++;
+                        }
+                    }
+
+                    Log.d("yesAnswers", String.valueOf(totalYesAnswers));
+                    Log.d("allAnswers", String.valueOf(totalAnswers));
+                    Log.d("division", String.valueOf(Math.round((double) totalYesAnswers/totalAnswers * 100.0)));
+
+                    teamAverageArray.add(Math.round((double) totalYesAnswers/totalAnswers * 100.0) + "%");
+                } else if(column.equals("END_GAME")){
+                    String mostCommonAnswer = null;
+                    int maxCount = -1;
+
+                    for (String answer : resultsArray) {
+                        int count = Collections.frequency(resultsArray, answer);
+                        if (count > maxCount) {
+                            mostCommonAnswer = answer;
+                            maxCount = count;
+                        }
+                    }
+
+                    teamAverageArray.add(mostCommonAnswer + " (" + Math.round((double) maxCount/resultsArray.size() * 100.0) + "%)");
+//                    teamAverageArray.add(mostCommonAnswer + " (" + (maxCount/resultsArray.size())*100 + "%)");
+                } else if (column.equals("SCOUTED_TEAM")){
+                    teamAverageArray.add(teamNumber);
+                } else {
+                    int total = 0;
+                    double result = 0.0;
+
+                    for(String number : resultsArray){
+                        total += Integer.parseInt(number);
+                    }
+
+                    result = Math.round((double) total/resultsArray.size() * 100.0) / 100.0;
+
+                    teamAverageArray.add(String.valueOf(result));
+                    Log.d("result", String.valueOf(result));
+                }
+            }
+
+            averageTable.add(teamAverageArray);
+        }
+
+        return averageTable;
+    }
+
+    public String makeCSVString(ArrayList<ArrayList<String>> table){
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
+        ArrayList<ArrayList<String>> scoutingDataList = (table != null) ? table : dataBaseHelper.getTable(true);
         StringBuilder csvString = new StringBuilder();
         int columnTotal = 0;
         int columnNumber = 0;
+
+        Log.d("scoutingDataList.size", String.valueOf(scoutingDataList.size()));
 
         for (ArrayList<String> scoutModel : scoutingDataList) {
             columnTotal = scoutModel.size();

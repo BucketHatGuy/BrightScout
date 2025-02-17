@@ -88,6 +88,31 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return dataTable;
     }
 
+    public ArrayList<String> getTableSpecific(String columnNames, String whereClause){
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<String> requestedData = new ArrayList<>();
+        int columnCount = 0;
+        Cursor cursor = whereClause == null ? db.rawQuery("SELECT " + columnNames + " FROM SCOUTING_TABLE", null) :
+                db.rawQuery("SELECT " + columnNames + " FROM SCOUTING_TABLE WHERE " + whereClause, null);
+
+        columnCount = cursor.getColumnCount();
+
+        while (cursor.moveToNext()){
+            for (int i = 0; i < columnCount; i++) {
+                requestedData.add(cursor.getString(i));
+            }
+        }
+
+        return requestedData;
+    }
+
+    public String[] getColumnNames(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE", null);
+
+        return cursor.getColumnNames();
+    }
+
     public boolean checkForTable(){
         Cursor cursor;
 
