@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -83,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
             File file = MainActivity.this.getExternalFilesDir(null);
             try {
                 FileWriter fileWriter = new FileWriter(file + "/BrightScoutExport.txt");
-                Log.d("file path", file + "/BrightScoutExport.txt");
                 fileWriter.write(makeCSVString());
                 fileWriter.close();
                 Toast.makeText(this, "yay!", Toast.LENGTH_LONG).show();
@@ -165,14 +165,12 @@ public class MainActivity extends AppCompatActivity {
         qualText.setText("Quals ??");
         qualText.setTypeface(null, Typeface.BOLD);
         qualText.setId(1000 + dataID);
-        Log.d("realQualsTextId", String.valueOf(qualText.getId()));
 
         // set up team text
         TextView teamText = new TextView(this);
         teamText.setText("Team ????");
         teamText.setId(View.generateViewId());
         teamText.setId(2000 + dataID);
-        Log.d("realTeamTextId", String.valueOf(teamText.getId()));
 
         //set up spacer
         TextView spacingLine = new TextView(this);
@@ -226,18 +224,17 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, "Syncing data...", Toast.LENGTH_LONG).show();
 
         if(dataBaseHelper.checkForTable()){
-            ArrayList<ScoutModel> scoutingDataList = dataBaseHelper.getTable();
-//            Log.d("among us", scoutingDataList.toString());
+            ArrayList<ArrayList<String>> scoutingDataList = dataBaseHelper.getTable(false);
 
             if(scoutingDataList.isEmpty()){
                 generateDefaultHomeScreen();
             } else {
-                for (ScoutModel scoutModel : scoutingDataList) {
-                    createMatch(scoutModel.getDataID());
-                    refreshMatchTitle(scoutModel.getDataID());
+                for (ArrayList<String> scoutModel : scoutingDataList) {
+                    createMatch(Integer.parseInt(scoutModel.get(0)));
+                    refreshMatchTitle(Integer.parseInt(scoutModel.get(0)));
 
-                    if(maxDataID < scoutModel.getDataID()){
-                        maxDataID = scoutModel.getDataID();
+                    if(maxDataID < Integer.parseInt(scoutModel.get(0))){
+                        maxDataID = Integer.parseInt(scoutModel.get(0));
                     }
                 }
             }
@@ -249,22 +246,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void refreshMatchTitle(int dataID){
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
-        ScoutModel scoutModel = dataBaseHelper.getScoutModel(dataID);
+        ArrayList<String> scoutModel = dataBaseHelper.getScoutingData(dataID);
 
         if(scoutModel != null){
             int qualId = 1000 + dataID;
             TextView qualsText = findViewById(qualId);
-            Log.d("qualsTextIdAttempted", String.valueOf(1000 + dataID));
 
             int teamId = 2000 + dataID;
             TextView teamText = findViewById(teamId);
-            Log.d("teamTextIdAttempted", String.valueOf(2000 + dataID));
 
             try {
-                qualsText.setText("Quals " + scoutModel.getQualNumber());
-                teamText.setText("Team " + scoutModel.getTeamScouted());
+                qualsText.setText("Quals " + scoutModel.get(3));
+                teamText.setText("Team " + scoutModel.get(2));
             } catch(Exception e){
-                Log.d("Error", "i no no wanna");
+                Log.d("Error", "Error refreshing match title.");
             }
         } else {
             Log.d("Error", "Scout Model returned Null");
@@ -288,14 +283,23 @@ public class MainActivity extends AppCompatActivity {
 
     public String makeCSVString(){
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
-        ArrayList<ScoutModel> scoutingDataList = dataBaseHelper.getTable();
+        ArrayList<ArrayList<String>> scoutingDataList = dataBaseHelper.getTable(true);
         StringBuilder csvString = new StringBuilder();
+        int columnTotal = 0;
+        int columnNumber = 0;
 
-        for (ScoutModel scoutModel : scoutingDataList) {
-            csvString.append(scoutModel.getName()).append(",");
-            csvString.append(scoutModel.getTeamScouted()).append(",");
-            csvString.append(scoutModel.getQualNumber()).append(",");
-            csvString.append(scoutModel.getRobotPosition());
+        for (ArrayList<String> scoutModel : scoutingDataList) {
+            columnTotal = scoutModel.size();
+            columnNumber = 0;
+
+            for (String string : scoutModel){
+                columnNumber++;
+                csvString.append(string);
+                if(columnNumber != columnTotal){
+                    csvString.append(",");
+                }
+            }
+
             csvString.append("\n");
         }
 
@@ -304,20 +308,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void compileQRData(String dataString){
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
-        String[] dataList = new String[4];
-
         maxDataID++;
 
         try {
-            dataList = dataString.split(",");
+            ArrayList<String> scoutModel = new ArrayList<>();
 
-            ScoutModel scoutModel = new ScoutModel(MainActivity.maxDataID,
-                    dataList[0],
-                    Integer.parseInt(dataList[1]),
-                    Integer.parseInt(dataList[2]),
-                    dataList[3]);
+            scoutModel.add(String.valueOf(maxDataID));
+            Collections.addAll(scoutModel, dataString.split(","));
 
             dataBaseHelper.addOne(scoutModel);
+
             createMatch(maxDataID);
             refreshMatchTitle(maxDataID);
 
@@ -325,7 +325,6 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             Toast.makeText(MainActivity.this, "Error while compiling data.", Toast.LENGTH_SHORT).show();
-            throw new RuntimeException(e);
         }
     }
 }
