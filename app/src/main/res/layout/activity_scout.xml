@@ -15,7 +15,8 @@
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="#FAFAFA" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -906,14 +907,13 @@
                     android:layout_weight="1"
                     android:text="Comments" />
 
-                <EditText
-                    android:id="@+id/commentsTextBox"
+                <Button
+                    android:id="@+id/commentButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="Slow Aligns? Defending? Broken?"
-                    android:inputType="text" />
+                    android:backgroundTint="#009CE4"
+                    android:text="Click to comment (required)" />
 
             </LinearLayout>
 

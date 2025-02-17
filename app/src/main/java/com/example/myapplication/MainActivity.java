@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 maxDataID++;
                 createMatch(maxDataID);
+                Toast.makeText(MainActivity.this, "New match made! Please scroll and click the title to begin scouting.", Toast.LENGTH_SHORT).show();
             }
         });
         syncAllData();
@@ -74,38 +75,32 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add("Export raw data to CSV");
-        menu.add("Export averaged data to CSV");
+        menu.add("Export data to CSV");
         menu.add("Import via QR");
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getTitle().equals("Export raw data to CSV")){
-            File file = MainActivity.this.getExternalFilesDir(null);
-            try {
-                FileWriter fileWriter = new FileWriter(file + "/BrightScout_rawExport.txt");
-                fileWriter.write(makeCSVString(null));
-                fileWriter.close();
-                Toast.makeText(this, "yay!", Toast.LENGTH_LONG).show();
-            } catch (IOException e) {
-                Toast.makeText(this, "an error occured", Toast.LENGTH_LONG).show();
-                throw new RuntimeException(e);
-            }
-        }
+        if(item.getTitle().equals("Export data to CSV")){
+            File rawFile = MainActivity.this.getExternalFilesDir(null);
+            File averagedFile = MainActivity.this.getExternalFilesDir(null);
 
-        if(item.getTitle().equals("Export averaged data to CSV")) {
-            File file = MainActivity.this.getExternalFilesDir(null);
             try {
-                FileWriter fileWriter = new FileWriter(file + "/BrightScout_averageExport.txt");
-                fileWriter.write(makeCSVString(getAverages()));
-                fileWriter.close();
-                Toast.makeText(this, "yay!", Toast.LENGTH_LONG).show();
+                FileWriter rawFileWriter = new FileWriter(rawFile + "/BrightScout_rawExport.txt");
+                rawFileWriter.write(makeCSVString(null));
+                rawFileWriter.close();
+
+                FileWriter avgFileWriter = new FileWriter(averagedFile + "/BrightScout_averageExport.txt");
+                avgFileWriter.write(makeCSVString(getAverages()));
+                avgFileWriter.close();
+
+                Toast.makeText(this, "Data has been saved. Search for \"BrightScout\" in your files app.", Toast.LENGTH_LONG).show();
             } catch (IOException e) {
-                Toast.makeText(this, "an error occured", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "An error occurred.", Toast.LENGTH_LONG).show();
                 throw new RuntimeException(e);
             }
+
         }
 
         if(item.getTitle().equals("Import via QR")) {
@@ -240,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void syncAllData(){
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
-        Toast.makeText(MainActivity.this, "Syncing data...", Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this, "Syncing data...", Toast.LENGTH_SHORT).show();
 
         if(dataBaseHelper.checkForTable()){
             ArrayList<ArrayList<String>> scoutingDataList = dataBaseHelper.getTable(false);

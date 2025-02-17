@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,20 +37,20 @@ import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ScoutActivity extends AppCompatActivity {
 
-    Button compileButton;
+    Button compileButton, dismissDialogButton, finishedButton, commentButton;
     EditText scoutNameBox, scoutedTeamBox, qualsMatchBox, commentBox;
     TextView autoL1Text, autoL2Text, autoL3Text, autoL4Text, autoCoralDroppedText, teleopL1Text, teleopL2Text, teleopL3Text, teleopL4Text,
             teleopCoralDroppedText, processorText, netText;
     TextInputLayout endgameDropdownPreview;
     CheckBox moveCheckbox, topAlgaeCheckbox, bottomAlgaeCheckbox;
     MainActivity mainActivity = MainActivity.getInstance();
-    Dialog dialog;
-    Button dialogButton;
+    Dialog qrDialog, commentDialog;
 
-    String[] endgameItems = {"Shallow Climb", "Deep Climb", "Park", "Kept Scoring Coral", "Kept Scoring Algae", "Nothing"};
+    String[] endgameItems = {"Deep Climb", "Shallow Climb", "Kept Scoring Coral", "Kept Scoring Algae", "Park", "Nothing"};
     String[] allianceItems = {"Red", "Blue"};
     String[] positionItems = {"1", "2", "3"};
     AutoCompleteTextView allianceDropdown, positionDropdown, endgameDropdown;
@@ -73,18 +74,43 @@ public class ScoutActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("BrightScout");
 
-        dialog = new Dialog(ScoutActivity.this);
-        dialog.setContentView(R.layout.qrcode_dialogue_box);
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.qrcode_dialogue_bg));
-        dialog.setCancelable(false);
+        qrDialog = new Dialog(ScoutActivity.this);
+        qrDialog.setContentView(R.layout.qrcode_dialogue_box);
+        qrDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        qrDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.dialog_bg));
+        qrDialog.setCancelable(false);
 
-        dialogButton = dialog.findViewById(R.id.dismissButton);
+        dismissDialogButton = qrDialog.findViewById(R.id.returnButton);
 
-        dialogButton.setOnClickListener(new View.OnClickListener() {
+        dismissDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                qrDialog.dismiss();
+                startActivity(new Intent(ScoutActivity.this, MainActivity.class));
+            }
+        });
+
+        commentDialog = new Dialog(ScoutActivity.this);
+        commentDialog.setContentView(R.layout.comment_dialogue_box);
+        commentDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        commentDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.dialog_bg));
+        commentDialog.setCancelable(false);
+
+        finishedButton = commentDialog.findViewById(R.id.finishedButton);
+
+        finishedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                commentDialog.dismiss();
+            }
+        });
+
+        commentButton = findViewById(R.id.commentButton);
+
+        commentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                commentDialog.show();
             }
         });
 
@@ -93,7 +119,7 @@ public class ScoutActivity extends AppCompatActivity {
         scoutNameBox = findViewById(R.id.scoutNameBoxView);
         scoutedTeamBox = findViewById(R.id.scoutedTeamBoxView);
         qualsMatchBox = findViewById(R.id.qualsMatchBoxView);
-        commentBox = findViewById(R.id.commentsTextBox);
+        commentBox = commentDialog.findViewById(R.id.commentsTextBox);
 
         autoL1Text = findViewById(R.id.autoL1Text);
         autoL2Text = findViewById(R.id.autoL2Text);
@@ -123,7 +149,7 @@ public class ScoutActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(allDataFilledCheck()){
                     compileData();
-                    dialog.show();
+                    qrDialog.show();
                 }
 
                 try{
@@ -181,19 +207,19 @@ public class ScoutActivity extends AppCompatActivity {
         boolean isEndgameDropdownEmpty = false;
 
         try{
-            isAllianceDropdownEmpty = (allianceItemSelected[0] == null) || (endgameItemSelected[0].isEmpty());
+            isAllianceDropdownEmpty = (allianceDropdown.getText().toString().isEmpty());
         } catch(Exception e){
             Log.d("Error", e.getMessage());
         }
 
         try{
-            isPositionDropdownEmpty = (endgameItemSelected[0] == null) || (endgameItemSelected[0].isEmpty());
+            isPositionDropdownEmpty = (positionDropdown.getText().toString().isEmpty());
         } catch(Exception e){
             Log.d("Error", e.getMessage());
         }
 
         try{
-            isEndgameDropdownEmpty = (endgameItemSelected[0] == null) || (endgameItemSelected[0].isEmpty());
+            isEndgameDropdownEmpty = (endgameDropdown.getText().toString().isEmpty());
         } catch(Exception e){
             Log.d("Error", e.getMessage());
         }
@@ -230,7 +256,7 @@ public class ScoutActivity extends AppCompatActivity {
             }
 
         } catch (Exception e){
-            Toast.makeText(ScoutActivity.this, "Unknown Compiling Error Occurred", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ScoutActivity.this, "Unknown Compiling Error Occurred.", Toast.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -242,7 +268,7 @@ public class ScoutActivity extends AppCompatActivity {
         scoutModel.add(scoutNameBox.getText().toString().replaceAll("[^A-Za-z0-9 ]",""));
         scoutModel.add(scoutedTeamBox.getText().toString());
         scoutModel.add(qualsMatchBox.getText().toString());
-        scoutModel.add(allianceItemSelected[0] + " " + positionItemSelected[0]);
+        scoutModel.add(allianceDropdown.getText().toString() + " " + positionDropdown.getText().toString());
         scoutModel.add(moveCheckbox.isChecked() ? "1" : "0");
         scoutModel.add(autoL1Text.getText().toString());
         scoutModel.add(autoL2Text.getText().toString());
@@ -258,7 +284,7 @@ public class ScoutActivity extends AppCompatActivity {
         scoutModel.add(bottomAlgaeCheckbox.isChecked() ? "1" : "0");
         scoutModel.add(processorText.getText().toString());
         scoutModel.add(netText.getText().toString());
-        scoutModel.add(endgameItemSelected[0]);
+        scoutModel.add(endgameDropdown.getText().toString());
         scoutModel.add(commentBox.getText().toString().replaceAll("[^A-Za-z0-9 ]",""));
 
         scoutNameBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
@@ -305,12 +331,12 @@ public class ScoutActivity extends AppCompatActivity {
 
         } catch (Exception e){
             Log.d("Error", e.getMessage());
-            Toast.makeText(this, "No data to insert, leaving default", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No data to insert, leaving default.", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void generateQRCode(String text) {
-        ImageView imageView3 = dialog.findViewById(R.id.imageView3);
+        ImageView imageView3 = qrDialog.findViewById(R.id.imageView3);
         BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
         try {
             Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 1000, 1000);
@@ -392,6 +418,10 @@ public class ScoutActivity extends AppCompatActivity {
         // the robot should have moved if they were able to place coral, so we set it as moved if the scouter tries to add data saying they moved coral
         if(buttonName.contains("Add") && buttonName.contains("auto") && !moveCheckbox.isChecked()){
             moveCheckbox.setChecked(true);
+        }
+
+        if((buttonName.contains("processor") || buttonName.contains("net")) && (!topAlgaeCheckbox.isChecked() && !bottomAlgaeCheckbox.isChecked())){
+            Toast.makeText(ScoutActivity.this, "Did you forget to check High or Low algae?", Toast.LENGTH_SHORT).show();
         }
     }
 }
