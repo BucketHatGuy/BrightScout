@@ -37,7 +37,6 @@ import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ScoutActivity extends AppCompatActivity {
 
@@ -50,7 +49,7 @@ public class ScoutActivity extends AppCompatActivity {
     MainActivity mainActivity = MainActivity.getInstance();
     Dialog qrDialog, commentDialog;
 
-    String[] endgameItems = {"Deep Climb", "Shallow Climb", "Kept Scoring Coral", "Kept Scoring Algae", "Park", "Nothing"};
+    String[] endgameItems = {"Deep Climb", "Shallow Climb", "Park", "Nothing"};
     String[] allianceItems = {"Red", "Blue"};
     String[] positionItems = {"1", "2", "3"};
     AutoCompleteTextView allianceDropdown, positionDropdown, endgameDropdown;
@@ -80,13 +79,16 @@ public class ScoutActivity extends AppCompatActivity {
         qrDialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.dialog_bg));
         qrDialog.setCancelable(false);
 
-        dismissDialogButton = qrDialog.findViewById(R.id.returnButton);
+        dismissDialogButton = qrDialog.findViewById(R.id.dismissDialogButton);
 
         dismissDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 qrDialog.dismiss();
-                startActivity(new Intent(ScoutActivity.this, MainActivity.class));
+
+                // the finish method returns the user back to the home screen without opening another activity.
+                // this will prevent it from lagging like it was before lol
+                finish();
             }
         });
 
@@ -263,6 +265,8 @@ public class ScoutActivity extends AppCompatActivity {
 
     public void compileData(){
         ArrayList<String> scoutModel = new ArrayList<>();
+        ArrayList<String> autoEPAModel = new ArrayList<>();
+        ArrayList<String> teleopEPAModel = new ArrayList<>();
 
         scoutModel.add(String.valueOf(MainActivity.currentDataID));
         scoutModel.add(scoutNameBox.getText().toString().replaceAll("[^A-Za-z0-9 ]",""));
@@ -287,6 +291,29 @@ public class ScoutActivity extends AppCompatActivity {
         scoutModel.add(endgameDropdown.getText().toString());
         scoutModel.add(commentBox.getText().toString().replaceAll("[^A-Za-z0-9 ]",""));
 
+        // adds up metrics for autonomous
+        autoEPAModel.add(moveCheckbox.isChecked() ? "1" : "0");
+        autoEPAModel.add(autoL1Text.getText().toString());
+        autoEPAModel.add(autoL2Text.getText().toString());
+        autoEPAModel.add(autoL3Text.getText().toString());
+        autoEPAModel.add(autoL4Text.getText().toString());
+
+        // adds up metrics for tele-op
+        teleopEPAModel.add(teleopL1Text.getText().toString());
+        teleopEPAModel.add(teleopL2Text.getText().toString());
+        teleopEPAModel.add(teleopL3Text.getText().toString());
+        teleopEPAModel.add(teleopL4Text.getText().toString());
+        teleopEPAModel.add(processorText.getText().toString());
+        teleopEPAModel.add(netText.getText().toString());
+        teleopEPAModel.add(endgameDropdown.getText().toString());
+
+        double autoEPA = getAutoEPA(autoEPAModel);
+        double teleopEPA = getTeleopEPA(teleopEPAModel);
+
+        scoutModel.add(String.valueOf(autoEPA + teleopEPA));
+        scoutModel.add(String.valueOf(autoEPA));
+        scoutModel.add(String.valueOf(teleopEPA));
+
         scoutNameBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
         scoutedTeamBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
         qualsMatchBox.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
@@ -298,6 +325,71 @@ public class ScoutActivity extends AppCompatActivity {
 
         scoutModel.remove(0);
         generateQRCode(makeCSVString(scoutModel));
+    }
+
+    public double getAutoEPA(ArrayList<String> autoList){
+        double autoEPA = 0;
+
+        // leaving gives you 3 points
+        if (autoList.get(0).equals("1")){
+            autoEPA += 3;
+        }
+
+        // this gets you the coral points total
+        autoEPA += (Integer.parseInt(autoList.get(1)) * 3);
+        autoEPA += (Integer.parseInt(autoList.get(2)) * 4);
+        autoEPA += (Integer.parseInt(autoList.get(3)) * 6);
+        autoEPA += (Integer.parseInt(autoList.get(4)) * 7);
+
+        /* Important to note that, in BrightScout, algae contributions are not counted for AUTONOMOUS.
+        * This decision was made because, at the time of Week 0, it seems algae really shouldn't be dealt with since
+        * they don't offer any more points than they do in tele-op. Including algae during auto in this app
+        * would make for a longer list of things for scouters to track, which, especially for less experienced
+        * scouters, can cause less accurate data to be input. BrightScout tries its best to optimize the data
+        * points needed for alliance selection by only getting the most important metrics, which at this time,
+        * would only include coral scored in AUTONOMOUS. */
+
+        return autoEPA;
+    }
+
+    public double getTeleopEPA(ArrayList<String> teleopList){
+//        teleopEPAModel.add(teleopL1Text.getText().toString());
+//        teleopEPAModel.add(teleopL2Text.getText().toString());
+//        teleopEPAModel.add(teleopL3Text.getText().toString());
+//        teleopEPAModel.add(teleopL4Text.getText().toString());
+//        teleopEPAModel.add(processorText.getText().toString());
+//        teleopEPAModel.add(netText.getText().toString());
+//        teleopEPAModel.add(endgameDropdown.getText().toString());
+
+        double teleopEPA = 0;
+
+        // calculations for coral levels
+        teleopEPA += Integer.parseInt(teleopList.get(0)) * 2;
+        teleopEPA += Integer.parseInt(teleopList.get(1)) * 3;
+        teleopEPA += Integer.parseInt(teleopList.get(2)) * 4;
+        teleopEPA += Integer.parseInt(teleopList.get(3)) * 5;
+
+        // calculation for processor
+        teleopEPA += Integer.parseInt(teleopList.get(4)) * 6;
+
+        // calculation for net
+        teleopEPA += Integer.parseInt(teleopList.get(5)) * 4;
+
+        // calculation for endgame position
+        switch (teleopList.get(6)){
+            case "Deep Climb":
+                teleopEPA += 12;
+                break;
+            case "Shallow Climb":
+                teleopEPA += 6;
+                break;
+            case "Park":
+                teleopEPA += 2;
+                break;
+            // No points would be awarded in the case that they did "Nothing".
+        }
+
+        return teleopEPA;
     }
 
     public void insertSavedData(){
@@ -326,7 +418,7 @@ public class ScoutActivity extends AppCompatActivity {
             bottomAlgaeCheckbox.setChecked(scoutModel.get(17).equals("1"));
             processorText.setText(scoutModel.get(18));
             netText.setText(scoutModel.get(19));
-            endgameDropdown.setText(scoutModel.get(20), true);
+            endgameDropdown.setText(scoutModel.get(20));
             commentBox.setText(String.valueOf(scoutModel.get(21)));
 
         } catch (Exception e){
@@ -420,7 +512,7 @@ public class ScoutActivity extends AppCompatActivity {
             moveCheckbox.setChecked(true);
         }
 
-        if((buttonName.contains("processor") || buttonName.contains("net")) && (!topAlgaeCheckbox.isChecked() && !bottomAlgaeCheckbox.isChecked())){
+        if((buttonName.contains("processor") || buttonName.contains("net")) && (!topAlgaeCheckbox.isChecked() && !bottomAlgaeCheckbox.isChecked()) && buttonName.contains("Add")){
             Toast.makeText(ScoutActivity.this, "Did you forget to check High or Low algae?", Toast.LENGTH_SHORT).show();
         }
     }

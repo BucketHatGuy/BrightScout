@@ -300,7 +300,6 @@ public class MainActivity extends AppCompatActivity {
         HashSet<String> teamNumbersSet = new HashSet<>(dataBaseHelper.getTableSpecific("SCOUTED_TEAM", null));
         ArrayList<String> columnNamesArray = new ArrayList<>();
         ArrayList<String> resultsArray = new ArrayList<>();
-        ArrayList<String> endgameDropdownArray = new ArrayList<>();
 
         ArrayList<ArrayList<String>> averageTable = new ArrayList<>();
 
@@ -319,8 +318,6 @@ public class MainActivity extends AppCompatActivity {
 
             for(String column : columnNamesArray){
                 resultsArray = dataBaseHelper.getTableSpecific(column, "SCOUTED_TEAM = \"" + teamNumber + "\"");
-                Log.d("size", String.valueOf(resultsArray.size()));
-                Log.d("Cycles", "We have cycled through the loop!");
 
                 if(column.equals("AUTO_MOVE") || column.equals("ALGAE_REMOVAL_TOP") || column.equals("ALGAE_REMOVAL_BOTTOM")){
                     int totalYesAnswers = 0;
@@ -331,10 +328,6 @@ public class MainActivity extends AppCompatActivity {
                             totalYesAnswers++;
                         }
                     }
-
-                    Log.d("yesAnswers", String.valueOf(totalYesAnswers));
-                    Log.d("allAnswers", String.valueOf(totalAnswers));
-                    Log.d("division", String.valueOf(Math.round((double) totalYesAnswers/totalAnswers * 100.0)));
 
                     teamAverageArray.add(Math.round((double) totalYesAnswers/totalAnswers * 100.0) + "%");
                 } else if(column.equals("END_GAME")){
@@ -364,7 +357,6 @@ public class MainActivity extends AppCompatActivity {
                     result = Math.round((double) total/resultsArray.size() * 100.0) / 100.0;
 
                     teamAverageArray.add(String.valueOf(result));
-                    Log.d("result", String.valueOf(result));
                 }
             }
 
@@ -380,8 +372,6 @@ public class MainActivity extends AppCompatActivity {
         StringBuilder csvString = new StringBuilder();
         int columnTotal = 0;
         int columnNumber = 0;
-
-        Log.d("scoutingDataList.size", String.valueOf(scoutingDataList.size()));
 
         for (ArrayList<String> scoutModel : scoutingDataList) {
             columnTotal = scoutModel.size();

@@ -29,14 +29,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<String> getScoutingData(int dataID){
-        try {
-            createTable();
-            System.out.println("No table detected, new table made.");
-        } catch(Exception e) {
-            System.out.println("Table detected, no table made.");
-            e.printStackTrace();
-        }
-
         ArrayList<String> scoutingDataArray = new ArrayList<>();
 
         try{
@@ -53,20 +45,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             cursor.close();
 
         } catch(Exception exception){
-            Log.d("Error", exception.getStackTrace().toString());
+            Log.d("Error", exception.getMessage());
         }
 
         return scoutingDataArray;
     }
 
-    public ArrayList<ArrayList<String>> getTable(boolean columnNamesRequested){
+    public ArrayList<ArrayList<String>> getTable(boolean exportFormat){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE", null);
         ArrayList<ArrayList<String>> dataTable = new ArrayList<>();
 
         int columnCount = cursor.getColumnCount();
 
-        if(columnNamesRequested) {
+        if(exportFormat) {
             ArrayList<String> columnNames = new ArrayList<>();
             Collections.addAll(columnNames, cursor.getColumnNames());
             dataTable.add(columnNames);
@@ -127,7 +119,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public void createTable(){
         SQLiteDatabase db = this.getWritableDatabase();
-        Log.d("Marker", "We're at Marker 1");
         String createTableStatement = "CREATE TABLE SCOUTING_TABLE (" +
                 "DATA_ID INT PRIMARY KEY, " +
                 "SCOUT_NAME TEXT, " +
@@ -150,10 +141,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "TELEOP_PROCESSOR INT," +
                 "TELEOP_NET INT," +
                 "END_GAME TEXT," +
-                "COMMENTS TEXT);";
+                "COMMENTS TEXT," +
+                "TOTAL_POINTS INT," +
+                "AUTO_POINTS INT," +
+                "TELEOP_POINTS INT);";
+
         db.execSQL(createTableStatement);
-        Log.d("Marker", "We're at Marker 2");
-//        Log.d("we made the table!","message");
     }
 
     public void addOne(ArrayList<String> scoutModel){
@@ -182,6 +175,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         cv.put("TELEOP_NET", scoutModel.get(19));
         cv.put("END_GAME", scoutModel.get(20));
         cv.put("COMMENTS", scoutModel.get(21));
+        cv.put("TOTAL_POINTS", scoutModel.get(22));
+        cv.put("AUTO_POINTS", scoutModel.get(23));
+        cv.put("TELEOP_POINTS", scoutModel.get(24));
 
         Cursor cursor = db.rawQuery("SELECT * FROM SCOUTING_TABLE WHERE DATA_ID=" + scoutModel.get(0), null);
 
