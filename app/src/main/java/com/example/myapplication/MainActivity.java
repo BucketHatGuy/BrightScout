@@ -311,13 +311,19 @@ public class MainActivity extends AppCompatActivity {
         columnNamesArray.remove("ROBOT_POSITION");
         columnNamesArray.remove("COMMENTS");
 
+        columnNamesArray.add("COLUMN_COUNT");
+
         averageTable.add(columnNamesArray);
 
         for(String teamNumber : teamNumbersSet){
             ArrayList<String> teamAverageArray = new ArrayList<>();
 
             for(String column : columnNamesArray){
-                resultsArray = dataBaseHelper.getTableSpecific(column, "SCOUTED_TEAM = \"" + teamNumber + "\"");
+                try {
+                    resultsArray = dataBaseHelper.getTableSpecific(column, "SCOUTED_TEAM = \"" + teamNumber + "\"");
+                } catch (Exception e){
+                    Log.d("Error" , e.getMessage());
+                }
 
                 if(column.equals("AUTO_MOVE") || column.equals("ALGAE_REMOVAL_TOP") || column.equals("ALGAE_REMOVAL_BOTTOM")){
                     int totalYesAnswers = 0;
@@ -346,6 +352,8 @@ public class MainActivity extends AppCompatActivity {
 //                    teamAverageArray.add(mostCommonAnswer + " (" + (maxCount/resultsArray.size())*100 + "%)");
                 } else if (column.equals("SCOUTED_TEAM")){
                     teamAverageArray.add(teamNumber);
+                } else if(column.equals("COLUMN_COUNT")){
+                    teamAverageArray.add(String.valueOf(resultsArray.size()));
                 } else {
                     int total = 0;
                     double result = 0.0;
