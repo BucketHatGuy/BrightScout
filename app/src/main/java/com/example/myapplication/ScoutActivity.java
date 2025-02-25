@@ -1,10 +1,6 @@
 package com.example.myapplication;
 
 import android.app.Dialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -463,15 +459,6 @@ public class ScoutActivity extends AppCompatActivity {
                 csvString.append(item);
             }
         }
-
-//        csvString.append(scoutModel.get(1)).append(",");
-//        csvString.append(scoutModel.get(2)).append(",");
-//        csvString.append(scoutModel.get(3)).append(",");
-//        csvString.append(scoutModel.get(4));
-
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("label", csvString.toString());
-        clipboard.setPrimaryClip(clip);
 
         return csvString.toString();
     }
