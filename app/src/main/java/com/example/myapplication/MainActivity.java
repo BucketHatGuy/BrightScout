@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
         columnNamesArray.remove("ROBOT_POSITION");
         columnNamesArray.remove("COMMENTS");
 
-        columnNamesArray.add("COLUMN_COUNT");
+        columnNamesArray.add("MATCH_COUNT");
 
         averageTable.add(columnNamesArray);
 
@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
 //                    teamAverageArray.add(mostCommonAnswer + " (" + (maxCount/resultsArray.size())*100 + "%)");
                 } else if (column.equals("SCOUTED_TEAM")){
                     teamAverageArray.add(teamNumber);
-                } else if(column.equals("COLUMN_COUNT")){
+                } else if(column.equals("MATCH_COUNT")){
                     teamAverageArray.add(String.valueOf(resultsArray.size()));
                 } else {
                     int total = 0;
