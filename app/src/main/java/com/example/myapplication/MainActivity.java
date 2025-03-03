@@ -34,7 +34,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity {
@@ -301,17 +300,24 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> columnNamesArray = new ArrayList<>();
         ArrayList<String> resultsArray = new ArrayList<>();
 
+        double highestTeleopEPA = 0;
+        double lastThreePointTotal = 0;
+
         ArrayList<ArrayList<String>> averageTable = new ArrayList<>();
 
         Collections.addAll(columnNamesArray, dataBaseHelper.getColumnNames());
 
+        // doesn't matter for averages
         columnNamesArray.remove("DATA_ID");
         columnNamesArray.remove("SCOUT_NAME");
         columnNamesArray.remove("QUALS_MATCH");
         columnNamesArray.remove("ROBOT_POSITION");
         columnNamesArray.remove("COMMENTS");
 
+        // stuff that is important and just needs to be calculated later
         columnNamesArray.add("MATCH_COUNT");
+        columnNamesArray.add("MAX_TELEOP_EPA");
+        columnNamesArray.add("LAST_THREE_EPA");
 
         averageTable.add(columnNamesArray);
 
@@ -354,12 +360,30 @@ public class MainActivity extends AppCompatActivity {
                     teamAverageArray.add(teamNumber);
                 } else if(column.equals("MATCH_COUNT")){
                     teamAverageArray.add(String.valueOf(resultsArray.size()));
+                } else if(column.equals("MAX_TELEOP_EPA")){
+                    teamAverageArray.add(String.valueOf(highestTeleopEPA));
+                } else if(column.equals("LAST_THREE_EPA")){
+                    teamAverageArray.add(String.valueOf(Math.round(lastThreePointTotal/3 * 100.0) / 100.0));
                 } else {
                     int total = 0;
                     double result = 0.0;
 
                     for(String number : resultsArray){
-                        total += Integer.parseInt(number);
+                        try{
+                            total += Integer.parseInt(number);
+                        } catch(Exception e){
+                            Log.d("bad number", String.valueOf(number));
+                            Log.d("column", String.valueOf(column));
+                        }
+
+                        if (column.equals("TELEOP_POINTS") && Integer.parseInt(number) > highestTeleopEPA){
+                            highestTeleopEPA = Integer.parseInt(number);
+                        }
+
+                        // indexOf starts from 0, while size doesn't. So if you have a size of 6, indexing the last element will give you 5.
+                        if (column.equals("TOTAL_POINTS") && (resultsArray.indexOf(number) > resultsArray.size() - 4)){
+                            lastThreePointTotal += Integer.parseInt(number);
+                        }
                     }
 
                     result = Math.round((double) total/resultsArray.size() * 100.0) / 100.0;
