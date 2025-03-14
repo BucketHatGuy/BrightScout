@@ -427,7 +427,6 @@ public class MainActivity extends AppCompatActivity {
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
         maxDataID++;
 
-        try {
             ArrayList<String> scoutModel = new ArrayList<>();
 
             scoutModel.add(String.valueOf(maxDataID));
@@ -440,8 +439,5 @@ public class MainActivity extends AppCompatActivity {
 
             Toast.makeText(MainActivity.this, "Compiling Successful!", Toast.LENGTH_SHORT).show();
 
-        } catch (Exception e) {
-            Toast.makeText(MainActivity.this, "Error while compiling data.", Toast.LENGTH_SHORT).show();
-        }
     }
 }

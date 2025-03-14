@@ -453,12 +453,11 @@ public class ScoutActivity extends AppCompatActivity {
         StringBuilder csvString = new StringBuilder();
 
         for(String item : scoutModel){
-            if(!(item.equals(scoutModel.get(scoutModel.size() - 1)))){
                 csvString.append(item).append(",");
-            } else {
-                csvString.append(item);
-            }
         }
+
+        // deletes the last comma when the for loop is done
+        csvString.delete(csvString.length() - 1, csvString.length());
 
         return csvString.toString();
     }
