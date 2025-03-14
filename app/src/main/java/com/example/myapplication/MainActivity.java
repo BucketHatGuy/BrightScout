@@ -139,9 +139,6 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams
                 (400, 75);
 
-        LinearLayout.LayoutParams trashParams = new LinearLayout.LayoutParams
-                (175, 175);
-
         LinearLayout.LayoutParams spacingLineParams = new LinearLayout.LayoutParams
                 (LinearLayout.LayoutParams.MATCH_PARENT, 60);
 
@@ -190,19 +187,19 @@ public class MainActivity extends AppCompatActivity {
         spacingLine.setText("----------------------------------------------------");
         spacingLine.setTextSize(25);
 
-        //set up trash button
-        ImageButton trashButton = new ImageButton(this);
-        trashButton.setImageResource(R.drawable.trash_can);
-        trashButton.setScaleType(ImageButton.ScaleType.FIT_XY);
-        trashButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"Match data has been deleted.", Toast.LENGTH_SHORT).show();
-                mainLayout.removeView(everythingLayout);
-                mainLayout.removeView(spacingLine);
-                dataBaseHelper.removeOne(textLayout.getId());
-            }
-        });
+//        //set up trash button
+//        ImageButton trashButton = new ImageButton(this);
+//        trashButton.setImageResource(R.drawable.trash_can);
+//        trashButton.setScaleType(ImageButton.ScaleType.FIT_XY);
+//        trashButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(MainActivity.this,"Match data has been deleted.", Toast.LENGTH_SHORT).show();
+//                mainLayout.removeView(everythingLayout);
+//                mainLayout.removeView(spacingLine);
+//                dataBaseHelper.removeOne(textLayout.getId());
+//            }
+//        });
 
         //sets default images and text to be not visible
         TextView text = findViewById(R.id.textView);
@@ -222,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
         textLayout.addView(teamText, textViewParams);
 
         everythingLayout.addView(textLayout, textLayoutParams);
-        everythingLayout.addView(trashButton, trashParams);
+//        everythingLayout.addView(trashButton, trashParams);
 
         mainLayout.addView(everythingLayout, everythingLayoutParams);
         mainLayout.addView(spacingLine, spacingLineParams);

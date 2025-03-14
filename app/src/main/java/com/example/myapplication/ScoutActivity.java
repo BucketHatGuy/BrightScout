@@ -69,6 +69,9 @@ public class ScoutActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("BrightScout");
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         qrDialog = new Dialog(ScoutActivity.this);
         qrDialog.setContentView(R.layout.qrcode_dialogue_box);
         qrDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
