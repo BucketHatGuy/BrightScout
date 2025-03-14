@@ -426,7 +426,7 @@ public class MainActivity extends AppCompatActivity {
     public void compileQRData(String dataString){
         DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
         maxDataID++;
-
+        try {
             ArrayList<String> scoutModel = new ArrayList<>();
 
             scoutModel.add(String.valueOf(maxDataID));
@@ -438,6 +438,9 @@ public class MainActivity extends AppCompatActivity {
             refreshMatchTitle(maxDataID);
 
             Toast.makeText(MainActivity.this, "Compiling Successful!", Toast.LENGTH_SHORT).show();
-
+        } catch (Exception e){
+            Toast.makeText(MainActivity.this, "Error compiling data.", Toast.LENGTH_SHORT).show();
+            // remove the try catch block to get a detailed message. there's no real way of getting a good stack trace in android studio which is really annoying, so let the app crash to get details.
+        }
     }
 }
