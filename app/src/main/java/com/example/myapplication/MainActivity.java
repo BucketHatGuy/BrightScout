@@ -76,11 +76,15 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add("Export data to CSV");
         menu.add("Import via QR");
+        menu.add("-------");
+        menu.add("Clear Data");
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(MainActivity.this);
+
         if(item.getTitle().equals("Export data to CSV")){
             File rawFile = MainActivity.this.getExternalFilesDir(null);
             File averagedFile = MainActivity.this.getExternalFilesDir(null);
@@ -107,6 +111,12 @@ public class MainActivity extends AppCompatActivity {
             intentIntegrator.setPrompt("Please scan a valid BrightScout QR Code.");
             intentIntegrator.setOrientationLocked(true);
             intentIntegrator.initiateScan();
+        }
+
+        if(item.getTitle().equals("Clear Data")) {
+            dataBaseHelper.clearTable();
+
+            startActivity(new Intent(MainActivity.this, MainActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
@@ -297,8 +307,8 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> columnNamesArray = new ArrayList<>();
         ArrayList<String> resultsArray = new ArrayList<>();
 
-        double highestTeleopEPA = 0;
-        double lastThreePointTotal = 0;
+        double maxEPA;
+        double lastThreePointTotal;
 
         ArrayList<ArrayList<String>> averageTable = new ArrayList<>();
 
@@ -313,13 +323,15 @@ public class MainActivity extends AppCompatActivity {
 
         // stuff that is important and just needs to be calculated later
         columnNamesArray.add("MATCH_COUNT");
-        columnNamesArray.add("MAX_TELEOP_EPA");
-        columnNamesArray.add("LAST_THREE_EPA");
+        columnNamesArray.add("MAX_EPA");
 
         averageTable.add(columnNamesArray);
 
         for(String teamNumber : teamNumbersSet){
             ArrayList<String> teamAverageArray = new ArrayList<>();
+
+            maxEPA = 0;
+            lastThreePointTotal = 0;
 
             for(String column : columnNamesArray){
                 try {
@@ -357,10 +369,8 @@ public class MainActivity extends AppCompatActivity {
                     teamAverageArray.add(teamNumber);
                 } else if(column.equals("MATCH_COUNT")){
                     teamAverageArray.add(String.valueOf(resultsArray.size()));
-                } else if(column.equals("MAX_TELEOP_EPA")){
-                    teamAverageArray.add(String.valueOf(highestTeleopEPA));
-                } else if(column.equals("LAST_THREE_EPA")){
-                    teamAverageArray.add(String.valueOf(Math.round(lastThreePointTotal/3 * 100.0) / 100.0));
+                } else if(column.equals("MAX_EPA")){
+                    teamAverageArray.add(String.valueOf(maxEPA));
                 } else {
                     int total = 0;
                     double result = 0.0;
@@ -373,8 +383,8 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("column", String.valueOf(column));
                         }
 
-                        if (column.equals("TELEOP_POINTS") && Integer.parseInt(number) > highestTeleopEPA){
-                            highestTeleopEPA = Integer.parseInt(number);
+                        if (column.equals("TOTAL_POINTS") && Integer.parseInt(number) > maxEPA){
+                            maxEPA = Integer.parseInt(number);
                         }
 
                         // indexOf starts from 0, while size doesn't. So if you have a size of 6, indexing the last element will give you 5.
